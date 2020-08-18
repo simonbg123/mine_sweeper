@@ -54,7 +54,7 @@ public class Game implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        System.out.println("X: " + e.getX() + ", Y: " + e.getY() );
     }
 
     @Override

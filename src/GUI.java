@@ -39,7 +39,6 @@ class GUI extends JFrame {
 
         BoardGUI gameBoard = new BoardGUI();
         gameBoard.addMouseListener(game);
-        gameBoard.setBounds((PANEL_WIDTH - gridSize) / 2, (PANEL_HEIGHT - gridSize) / 2, gridSize, gridSize);
         add(gameBoard);
 
         setVisible(true);
@@ -55,6 +54,8 @@ class GUI extends JFrame {
     class BoardGUI extends JPanel {
 
         public void paintComponent(Graphics g) {
+
+            setBounds((PANEL_WIDTH - gridSize) / 2, (PANEL_HEIGHT - gridSize) / 2, gridSize, gridSize);
 
             Board.Cell[][] grid = board.getGrid();
 
