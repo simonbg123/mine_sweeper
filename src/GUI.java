@@ -18,7 +18,11 @@ class GUI extends JFrame {
     private int cellSize;
     private int gridSize;
 
-    GUI() {
+    private Board board; // logical board
+
+    GUI(Board board) {
+
+        this.board = board;
 
         spacing = DEFAULT_SPACING;
         boardSize = Main.DEFAULT_SIZE;
@@ -34,7 +38,7 @@ class GUI extends JFrame {
         setResizable(false);
 
         BoardGUI gameBoard = new BoardGUI();
-        gameBoard.addMouseListener(new Click());
+        gameBoard.addMouseListener(new GridClicker());
         gameBoard.setBounds((PANEL_WIDTH - gridSize) / 2, (PANEL_HEIGHT - gridSize) / 2, gridSize, gridSize);
         add(gameBoard);
 
@@ -70,7 +74,7 @@ class GUI extends JFrame {
         }
     }
 
-    class Click implements MouseListener {
+    class GridClicker implements MouseListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {

@@ -8,7 +8,6 @@ public class Main {
     private static final int WIN_LEVEL = 10;
     private static final int LEVEL_INCREMENT = 1;
 
-    private int board_size;
     private int startingLevel;
     private int winLevel;
     private int levelIncrement;
@@ -17,19 +16,12 @@ public class Main {
 
     public Main(GUI gui) {
         this.gui = gui;
-        board_size = DEFAULT_SIZE;
         startingLevel = STARTING_LEVEL;
         winLevel = WIN_LEVEL;
         levelIncrement = LEVEL_INCREMENT;
     }
 
-    public Main(GUI gui, int board_size, int startingLevel, int winLevel, int getLevelIncrement) {
-        this.gui = gui;
-        this.board_size = board_size;
-        this.startingLevel = startingLevel;
-        this.winLevel = winLevel;
-        this.levelIncrement = getLevelIncrement;
-    }
+
 
     private boolean play() {
 
@@ -38,7 +30,7 @@ public class Main {
 
         while (level < winLevel) {
             System.out.println("LEVEL: " + level + " bombs\n");
-            Game game = new Game(board_size, level);
+            Game game = new Game(board, level);
             level += levelIncrement;
             win = game.play();
             if (win) {
@@ -60,7 +52,11 @@ public class Main {
 
 
         Scanner scan = new Scanner(System.in);
-        GUI gui = new GUI();
+
+        //default starting board
+        //todo add options to change board size etc.
+        Board board = new Board(DEFAULT_SIZE, STARTING_LEVEL);
+        GUI gui = new GUI(board);
         Main config = new Main(gui);
 
         while(true) {

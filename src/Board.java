@@ -1,15 +1,14 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
 public class Board {
-    private int n;
+    private int size;
     private Cell[][] grid;
     private int numBombs;
     private int nTilesToUncover;
 
     public Board(int n, int numBombs) {
-        this.n = n;
+        this.size = n;
         this.numBombs = numBombs;
         grid = new Cell[n][n];
         nTilesToUncover = n * n - numBombs;
@@ -20,8 +19,8 @@ public class Board {
 
         // create cells and bombs
         int bombsToPlace = numBombs;
-        for (int row = 0; row < n; ++row ) {
-            for (int col = 0; col < n; ++col) {
+        for (int row = 0; row < size; ++row ) {
+            for (int col = 0; col < size; ++col) {
                 grid[row][col] = new Cell();
                 if (bombsToPlace > 0) {
                     grid[row][col].isBomb = true;
@@ -37,10 +36,10 @@ public class Board {
 
     private void shuffleBombs() {
         Random random = new Random();
-        for (int row = 0; row < n; ++row) {
-            for (int col = 0; col < n; ++col) {
-                int i = random.nextInt(n);
-                int j = random.nextInt(n);
+        for (int row = 0; row < size; ++row) {
+            for (int col = 0; col < size; ++col) {
+                int i = random.nextInt(size);
+                int j = random.nextInt(size);
 
                 //swap
                 if (row != i && col != j) {
@@ -58,8 +57,8 @@ public class Board {
                 { 0, -1},          { 0, 1},
                 { 1, -1}, { 1, 0}, { 1, 1}
         };
-        for (int row = 0; row < n; ++row) {
-            for (int col = 0; col < n; ++col) {
+        for (int row = 0; row < size; ++row) {
+            for (int col = 0; col < size; ++col) {
 
 
                 if (grid[row][col].isBomb) {
@@ -67,7 +66,7 @@ public class Board {
                         int i_child = row + delta[0];
                         int j_child = col + delta[1];
 
-                        if (i_child < 0 || i_child >= n || j_child < 0 || j_child >= n) {
+                        if (i_child < 0 || i_child >= size || j_child < 0 || j_child >= size) {
                             continue;
                         }
                         ++grid[i_child][j_child].bombIndex;
@@ -103,7 +102,7 @@ public class Board {
         sb.append("\n\n");
 
         for (Cell[] row : grid) {
-            sb.append("----".repeat(n));
+            sb.append("----".repeat(size));
             sb.append("\n");
             for (Cell cell : row) {
                 sb.append("| ");
@@ -115,7 +114,7 @@ public class Board {
             }
             sb.append("|\n");
         }
-        sb.append("----".repeat(n));
+        sb.append("----".repeat(size));
         sb.append("\n\n");
 
         System.out.println(sb.toString());
@@ -152,7 +151,7 @@ public class Board {
                 int i_child = visited[0] + delta[0];
                 int j_child = visited[1] + delta[1];
 
-                if (i_child < 0 || i_child >= n || j_child < 0 || j_child >= n) {
+                if (i_child < 0 || i_child >= size || j_child < 0 || j_child >= size) {
                     continue;
                 }
 
@@ -169,7 +168,9 @@ public class Board {
         return nTilesToUncover;
     }
 
-
+    public void setSize(int size) {
+        this.size = size;
+    }
 
     private class Cell {
         int bombIndex;
