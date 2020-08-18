@@ -1,22 +1,23 @@
 import java.util.Scanner;
 
-public class Driver {
+public class Main {
 
-    public static final int DEFAULT_SIZE = 8;
-    public static final int STARTING_LEVEL = 2;
-    public static final int WIN_LEVEL = 10;
-    public static final int LEVEL_INCREMENT = 1;
+    private static final int DEFAULT_SIZE = 8;
+    private static final int STARTING_LEVEL = 2;
+    private static final int WIN_LEVEL = 10;
+    private static final int LEVEL_INCREMENT = 1;
 
+    //todo put this code in a run method?
     public static void main(String[] args) {
 
-        // todo in GUI
-        // the text-based option will start this.
+
+        Scanner scan = new Scanner(System.in);
+
+        GUI gui = new GUI();
+
         int size = DEFAULT_SIZE;
         int level = STARTING_LEVEL;
         boolean win = false;
-        Scanner scan = new Scanner(System.in);
-
-        System.out.println("\n*****MINE SWEEPER****\n");
 
         while(true) {
             while (level < WIN_LEVEL) {
