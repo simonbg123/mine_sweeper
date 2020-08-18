@@ -36,13 +36,15 @@ class GUI extends JFrame {
         setTitle("Mine Sweeper");
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
-        setResizable(false);
 
         BoardGUI gameBoard = new BoardGUI();
         gameBoard.addMouseListener(game);
         gameBoard.setBounds((PANEL_WIDTH - gridSize) / 2, (PANEL_HEIGHT - gridSize) / 2, gridSize, gridSize);
         add(gameBoard);
+
+        setVisible(true);
+        setResizable(false);
+
 
 
 
@@ -77,34 +79,6 @@ class GUI extends JFrame {
 
                 }
             }
-
-        }
-    }
-
-    class GridClicker implements MouseListener {
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            System.out.println("Hello there");
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
 
         }
     }
