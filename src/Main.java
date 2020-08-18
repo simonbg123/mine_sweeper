@@ -13,9 +13,11 @@ public class Main {
     private int levelIncrement;
 
     private GUI gui;
+    private Game game;
 
-    public Main(GUI gui) {
+    public Main(GUI gui, Game game) {
         this.gui = gui;
+        this.game = game;
         startingLevel = STARTING_LEVEL;
         winLevel = WIN_LEVEL;
         levelIncrement = LEVEL_INCREMENT;
@@ -30,7 +32,7 @@ public class Main {
 
         while (level < winLevel) {
             System.out.println("LEVEL: " + level + " bombs\n");
-            Game game = new Game(board, level);
+            game.initialize(level);
             level += levelIncrement;
             win = game.play();
             if (win) {
@@ -55,9 +57,10 @@ public class Main {
 
         //default starting board
         //todo add options to change board size etc.
-        Board board = new Board(DEFAULT_SIZE, STARTING_LEVEL);
-        GUI gui = new GUI(board);
-        Main config = new Main(gui);
+        Board board = new Board(DEFAULT_SIZE);
+        Game game = new Game(board);
+        GUI gui = new GUI(board, game);
+        Main config = new Main(gui, game);
 
         while(true) {
 
@@ -68,12 +71,6 @@ public class Main {
             System.out.println(message);
 
             //todo will need mechanism to listen for user input
-            // offer a one-board game: change the settings for that
-            // will need a Main object to contain those settings
-            // keep the final statics though.
-            // depending on user input: build a Main with defaults
-            // or other values.
-            //
             String input = "";
             while (!input.trim().matches("^[yYnN]$")) {
                 System.out.println("Wanna try again? (y | n)");

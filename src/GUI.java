@@ -19,10 +19,12 @@ class GUI extends JFrame {
     private int gridSize;
 
     private Board board; // logical board
+    private Game game;
 
-    GUI(Board board) {
+    GUI(Board board, Game game) {
 
         this.board = board;
+        this.game = game;
 
         spacing = DEFAULT_SPACING;
         boardSize = Main.DEFAULT_SIZE;

@@ -4,19 +4,16 @@ import java.util.Random;
 public class Board {
     private int size;
     private Cell[][] grid;
-    private int numBombs;
     private int nTilesToUncover;
 
-    public Board(int n, int numBombs) {
+    public Board(int n) {
         this.size = n;
-        this.numBombs = numBombs;
         grid = new Cell[n][n];
-        nTilesToUncover = n * n - numBombs;
-        initializeBoard();
     }
 
-    private void initializeBoard() {
+    void initialize(int numBombs) {
 
+        nTilesToUncover = size * size - numBombs;
         // create cells and bombs
         int bombsToPlace = numBombs;
         for (int row = 0; row < size; ++row ) {
@@ -170,6 +167,10 @@ public class Board {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     private class Cell {

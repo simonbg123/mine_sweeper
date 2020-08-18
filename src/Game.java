@@ -1,29 +1,23 @@
 import java.util.Scanner;
 
 public class Game {
-    int size;
-    int numBombs;
     Board board;
     Scanner scan;
 
-    //todo ideas: could take a reference to GUI board element in constructor.
-    // after each sequence of play, call a helper method in GUI. That helper method
-    // renders a grid based on a 2D array.
-    // or the whole game play could be in a button listener.
-    // ... Better to make the button listener start the game, not implement it.
-    // ... call its play method and display result appropriately.
-
-    public Game(int size, int numBombs) {
-        this.size = size;
-        this.numBombs = numBombs;
-        board = new Board(size, numBombs);
+    public Game(Board board) {
+        this.board = board;
         scan = new Scanner(System.in);
+    }
+
+    public void initialize(int numBombs) {
+        board.initialize(numBombs);
+
     }
 
     public boolean play() {
         TurnResult result = TurnResult.CONTINUE;
         while (result == TurnResult.CONTINUE) {
-            int[] target = getCellToFlip(); //todo could get notification from mouseListener
+            int[] target = getCellToFlip();
             result = board.flipTile(target[0], target[1]);
             board.showUpdatedBoard(result == TurnResult.WIN);
         }
@@ -44,7 +38,7 @@ public class Game {
 
             int user_i = Integer.parseInt(ints[0]);
             int user_j = Integer.parseInt(ints[1]);
-            if (user_i < 1 || user_i > size || user_j < 1 || user_j > size) continue;
+            if (user_i < 1 || user_i > board.getSize() || user_j < 1 || user_j > board.getSize()) continue;
             i = user_i - 1;
             j = user_j - 1;
             if (board.tileIsVisible(i, j)) {
