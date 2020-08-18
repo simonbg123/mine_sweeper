@@ -40,7 +40,7 @@ class GUI extends JFrame {
         setResizable(false);
 
         BoardGUI gameBoard = new BoardGUI();
-        gameBoard.addMouseListener(new GridClicker());
+        gameBoard.addMouseListener(game);
         gameBoard.setBounds((PANEL_WIDTH - gridSize) / 2, (PANEL_HEIGHT - gridSize) / 2, gridSize, gridSize);
         add(gameBoard);
 
