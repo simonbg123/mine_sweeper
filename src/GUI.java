@@ -54,6 +54,8 @@ class GUI extends JFrame {
 
         public void paintComponent(Graphics g) {
 
+            Board.Cell[][] grid = board.getGrid();
+
             g.setColor(Color.black);
             g.fillRect(
                     0, 0,
@@ -64,12 +66,15 @@ class GUI extends JFrame {
 
             for (int i = 0; i < boardSize; ++i) {
                 for (int j = 0; j < boardSize; ++j) {
-                    g.fillRect(
-                            startX + spacing + i * cellSize,
-                            startY + spacing + j * cellSize,
-                            cellSize - 2 * spacing,
-                            cellSize - 2 * spacing
-                    );
+                    if (!grid[i][j].isVisible) {
+                        g.fillRect(
+                                startX + spacing + i * cellSize,
+                                startY + spacing + j * cellSize,
+                                cellSize - 2 * spacing,
+                                cellSize - 2 * spacing
+                        );
+                    }
+
                 }
             }
 

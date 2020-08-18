@@ -1,7 +1,23 @@
 import java.util.LinkedList;
 import java.util.Random;
 
+/**
+ * Represents the game board logical structure
+ */
 public class Board {
+
+    class Cell {
+        int nCloseBombs;
+        boolean isBomb;
+        boolean isVisible;
+
+        Cell() {
+            this.nCloseBombs = 0;
+            this.isBomb = false;
+            this.isVisible = false;
+        }
+    }
+
     private int size;
     private Cell[][] grid;
     private int nTilesToUncover;
@@ -66,7 +82,7 @@ public class Board {
                         if (i_child < 0 || i_child >= size || j_child < 0 || j_child >= size) {
                             continue;
                         }
-                        ++grid[i_child][j_child].bombIndex;
+                        ++grid[i_child][j_child].nCloseBombs;
                     }
                 }
             }
@@ -82,7 +98,7 @@ public class Board {
             return TurnResult.LOSS;
         }
 
-        if (cell.bombIndex == 0) {
+        if (cell.nCloseBombs == 0) {
             cell.isVisible = false; // flipNeighbours will switch it back to true
             flipNeighbours(i, j);
         }
@@ -105,7 +121,7 @@ public class Board {
                 sb.append("| ");
                 if (winningBoard || cell.isVisible) {
                     if (cell.isBomb) sb.append("* ");
-                    else sb.append("" + cell.bombIndex + " ");
+                    else sb.append("" + cell.nCloseBombs + " ");
                 }
                 else sb.append("? ");
             }
@@ -139,7 +155,7 @@ public class Board {
             current.isVisible = true;
             --nTilesToUncover;
 
-            if (current.bombIndex > 0) {
+            if (current.nCloseBombs > 0) {
                 continue;
             }
 
@@ -173,16 +189,7 @@ public class Board {
         return size;
     }
 
-    private class Cell {
-        int bombIndex;
-        boolean isBomb;
-        boolean isVisible;
-
-        public Cell() {
-            this.bombIndex = 0;
-            this.isBomb = false;
-            this.isVisible = false;
-        }
+    public Cell[][] getGrid() {
+        return grid;
     }
-
 }

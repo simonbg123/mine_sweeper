@@ -3,20 +3,20 @@ import java.awt.event.MouseListener;
 import java.util.Scanner;
 
 public class Game implements MouseListener {
-    Board board;
-    Scanner scan;
+    private Board board;
+    private Scanner scan;
 
-    public Game(Board board) {
+    Game(Board board) {
         this.board = board;
         scan = new Scanner(System.in);
     }
 
-    public void initialize(int numBombs) {
+    void initialize(int numBombs) {
         board.initialize(numBombs);
 
     }
 
-    public boolean play() {
+    boolean play() {
         TurnResult result = TurnResult.CONTINUE;
         while (result == TurnResult.CONTINUE) {
             int[] target = getCellToFlip();
@@ -27,7 +27,7 @@ public class Game implements MouseListener {
         return result == TurnResult.WIN;
     }
 
-    public int[] getCellToFlip() {
+    private int[] getCellToFlip() {
         int i = 0, j = 0;
         boolean validInput = false;
 
@@ -54,7 +54,7 @@ public class Game implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        
+
     }
 
     @Override
