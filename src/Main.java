@@ -3,7 +3,7 @@ import java.util.Scanner;
 //todo make this configurable: one game, or increasing levels
 public class Main {
 
-    private static final int DEFAULT_SIZE = 8;
+    public static final int DEFAULT_SIZE = 8;
     private static final int STARTING_LEVEL = 2;
     private static final int WIN_LEVEL = 10;
     private static final int LEVEL_INCREMENT = 1;
@@ -54,17 +54,14 @@ public class Main {
     }
 
     // basic play through increasing levels
+    //todo idea: make this a Thread. The run method loops and constantly repaints the GUI. Allows for cool effects
+    // such as reacting immediately when mouse over changes color.
     public static void main(String[] args) {
 
 
         Scanner scan = new Scanner(System.in);
-
         GUI gui = new GUI();
-
         Main config = new Main(gui);
-
-
-
 
         while(true) {
 

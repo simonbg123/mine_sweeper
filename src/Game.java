@@ -23,7 +23,7 @@ public class Game {
     public boolean play() {
         TurnResult result = TurnResult.CONTINUE;
         while (result == TurnResult.CONTINUE) {
-            int[] target = getCellToFlip();
+            int[] target = getCellToFlip(); //todo could get notification from mouseListener
             result = board.flipTile(target[0], target[1]);
             board.showUpdatedBoard(result == TurnResult.WIN);
         }
