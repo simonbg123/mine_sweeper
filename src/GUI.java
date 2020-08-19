@@ -18,7 +18,8 @@ class GUI extends JFrame {
     private int spacing;
     private int boardSize;
     private int cellSize;
-    private int gridSize;
+    private int gridHeight;
+    private int gridWidth;
 
     private Board board; // logical board
     private Game game;
@@ -34,7 +35,8 @@ class GUI extends JFrame {
         // each cell is padded by 1 spacing on the left and the right
         // 1 extra spacing is added on the left-most cell and right-most cell for evenness.
         // Two full spacings are added as a border for the whole boarding.
-        gridSize = boardSize * cellSize + 6 * spacing;
+        gridHeight = boardSize * cellSize + 6 * spacing;
+        gridWidth = boardSize * cellSize + 6 * spacing;
 
 
         setTitle("Mine Sweeper");
@@ -61,12 +63,12 @@ class GUI extends JFrame {
 
         public void paintComponent(Graphics g) {
 
-            setBounds((PANEL_WIDTH - gridSize) / 2, (PANEL_HEIGHT - gridSize) / 2, gridSize, gridSize);
+            setBounds((PANEL_WIDTH - gridWidth) / 2, (PANEL_HEIGHT - gridHeight) / 2, gridWidth, gridHeight);
 
             Board.Cell[][] grid = board.getGrid();
 
             g.setColor(Color.black);
-            g.fillRect(0, 0, gridSize, gridSize);
+            g.fillRect(0, 0, gridWidth, gridHeight);
             int startX = 3 * spacing;
             int startY = 3 * spacing;
 
