@@ -3,37 +3,54 @@ import java.util.Scanner;
 //todo make this configurable: one game, or increasing levels
 public class Main {
 
-    public static final int DEFAULT_SIZE = 8;
-    private static final int STARTING_LEVEL = 2;
-    private static final int WIN_LEVEL = 10;
-    private static final int LEVEL_INCREMENT = 1;
+    private static Main instance = new Main();
 
-    private int startingLevel;
+    public static final int DEFAULT_SIZE = 9;
+    private static final int STARTING_NUMBER_OF_BOMBS = 2;
+    private static final int WIN_LEVEL = 10;
+    private static final int BOMB_INCREMENT = 1;
+
+    private int startingNumberOfBombs;
     private int winLevel;
-    private int levelIncrement;
+    private int bombIncrement;
 
     private GUI gui;
     private Game game;
+    private Board board;
 
-    public Main(GUI gui, Game game) {
-        this.gui = gui;
-        this.game = game;
-        startingLevel = STARTING_LEVEL;
+    private Main() {
+        startingNumberOfBombs = STARTING_NUMBER_OF_BOMBS;
         winLevel = WIN_LEVEL;
-        levelIncrement = LEVEL_INCREMENT;
+        bombIncrement = BOMB_INCREMENT;
+        board = Board.getInstance();
+        board.initialize(startingNumberOfBombs);
+        gui = GUI.getInstance();
+        game = Game.getInstance();
+
     }
 
+    public static Main getInstance() {
+        return instance;
+    }
 
+    private static void init() {
+        // the Game singleton acquires its reference to GUI and Main
+        // once all instances have been constructed
+        Game.getInstance().initialize();
+        //config.gui.addListener, etc.
+    }
 
     private boolean play() {
 
-        int level = startingLevel;
+        int level = 1;
         boolean win = false;
+        int nBombs = startingNumberOfBombs;
 
-        while (level < winLevel) {
-            System.out.println("LEVEL: " + level + " bombs\n");
-            game.initialize(level);
-            level += levelIncrement;
+        while (level <= winLevel) {
+            System.out.println(getLevelAnnouncement(level,nBombs));
+            board.initialize(nBombs);
+            level += 1;
+            nBombs += bombIncrement;
             win = game.play();
             if (win) {
                 //through GUI
@@ -47,6 +64,10 @@ public class Main {
         return true;
     }
 
+    private String getLevelAnnouncement(int level, int nBombs) {
+        return "LEVEL " + level + "/" + winLevel + " : " + nBombs + " bombs";
+    }
+
     // basic play through increasing levels
     //todo idea: make this a Thread. The run method loops and constantly repaints the GUI. Allows for cool effects
     // such as reacting immediately when mouse over changes color.
@@ -55,13 +76,9 @@ public class Main {
 
         Scanner scan = new Scanner(System.in);
 
-        //default starting board
-        //todo add options to change board size etc.
-        Board board = new Board(DEFAULT_SIZE);
-        Game game = new Game(board);
-        GUI gui = new GUI(board, game);
-        Main config = new Main(gui, game);
+        init();
 
+        Main config = Main.getInstance();
         while(true) {
 
             boolean win = config.play();
@@ -81,10 +98,12 @@ public class Main {
             }
             else {
                 // moot. Possibly change config here.
-                config.startingLevel = STARTING_LEVEL;
+                config.startingNumberOfBombs = STARTING_NUMBER_OF_BOMBS;
             }
         }
 
         System.out.println("\nThank you for playing!");
     }
+
+
 }

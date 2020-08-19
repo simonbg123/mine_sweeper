@@ -3,16 +3,28 @@ import java.awt.event.MouseListener;
 import java.util.Scanner;
 
 public class Game implements MouseListener {
+    private static Game instance = null;
+
     private Board board;
+    private GUI gui;
+    private Main main;
     private Scanner scan;
 
-    Game(Board board) {
-        this.board = board;
+    private Game() {
+        board = Board.getInstance();
         scan = new Scanner(System.in);
     }
 
-    void initialize(int numBombs) {
-        board.initialize(numBombs);
+    public static Game getInstance() {
+        if (instance == null) {
+            instance = new Game();
+        }
+        return instance;
+    }
+
+    void initialize() {
+        gui = GUI.getInstance();
+        main = Main.getInstance();
 
     }
 
@@ -51,6 +63,8 @@ public class Game implements MouseListener {
 
         return new int[]{i, j};
     }
+
+
 
     @Override
     public void mouseClicked(MouseEvent e) {

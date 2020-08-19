@@ -6,15 +6,29 @@ import java.util.Random;
  */
 public class Board {
 
+    private static Board instance = new Board(Main.DEFAULT_SIZE);
+
     class Cell {
-        int nCloseBombs;
-        boolean isBomb;
-        boolean isVisible;
+        private int nCloseBombs;
+        private boolean isBomb;
+        private boolean isVisible;
 
         Cell() {
             this.nCloseBombs = 0;
             this.isBomb = false;
             this.isVisible = false;
+        }
+
+        public int getnCloseBombs() {
+            return nCloseBombs;
+        }
+
+        public boolean isBomb() {
+            return isBomb;
+        }
+
+        public boolean isVisible() {
+            return isVisible;
         }
     }
 
@@ -22,9 +36,13 @@ public class Board {
     private Cell[][] grid;
     private int nTilesToUncover;
 
-    public Board(int n) {
+    private Board(int n) {
         this.size = n;
         grid = new Cell[n][n];
+    }
+
+    public static Board getInstance() {
+        return instance;
     }
 
     void initialize(int numBombs) {
