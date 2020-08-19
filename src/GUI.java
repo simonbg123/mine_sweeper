@@ -99,4 +99,22 @@ class GUI extends JFrame {
 
         }
     }
+
+    /**
+     * Get grid j index from JPanel X coordinate
+     * @param x
+     * @return
+     */
+    int getJfromX(int x) {
+        return (x - 3 * spacing) / cellSize;
+    }
+
+    /**
+     * Get grid i index from JPanel Y coordinate
+     * @param y
+     * @return
+     */
+    int getIfromY(int y) {
+        return (y - 3 * spacing) / cellSize;
+    }
 }
