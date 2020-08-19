@@ -69,9 +69,10 @@ public class Game implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        int i = gui.getJfromX(e.getX());
-        int j = gui.getIfromY(e.getY());
+        int i = gui.getIfromY(e.getY());
+        int j = gui.getJfromX(e.getX());
         System.out.println(i + " " + j);
+        System.out.println(board.getGrid()[i][j].getnCloseBombs());
 
     }
 

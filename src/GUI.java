@@ -70,29 +70,42 @@ class GUI extends JFrame {
             int startX = 3 * spacing;
             int startY = 3 * spacing;
 
+            // i's correspond to Y coordinates
             for (int i = 0; i < boardSize; ++i) {
                 for (int j = 0; j < boardSize; ++j) {
 
                     Board.Cell cell = grid[i][j];
+                    String str = "";
 
                     if (!cell.isVisible()) {
                         g.setColor(Color.gray);
                     }
                     else if (cell.isBomb()) {
                         g.setColor(Color.red);
+                        str = "((*))";
                     }
                     else if (cell.getnCloseBombs() > 0) {
                         g.setColor(Color.yellow);
+                        str = Integer.toString(cell.getnCloseBombs());
                     }
                     else {
                         g.setColor(Color.lightGray);
                     }
                     g.fillRect(
-                            startX + spacing + i * cellSize,
-                            startY + spacing + j * cellSize,
+                            startX + spacing + j * cellSize,
+                            startY + spacing + i * cellSize,
                             cellSize - 2 * spacing,
                             cellSize - 2 * spacing
                     );
+                    if (!str.isBlank()) {
+                        g.setColor(Color.BLACK);
+                        g.setFont(new Font("Monospace", Font.BOLD, cellSize*4/ (cell.isBomb()? 15: 9) ));
+                        g.drawString(
+                                str,
+                                startX + spacing + j * cellSize + cellSize / (cell.isBomb()? 5 : 3),
+                                startY + spacing + i * cellSize + cellSize * (cell.isBomb()? 13 : 15) / 24
+                        );
+                    }
 
                 }
             }
