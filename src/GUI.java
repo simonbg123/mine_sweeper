@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 
 class GUI extends JFrame {
@@ -16,7 +14,8 @@ class GUI extends JFrame {
     private static final int PANEL_HEIGHT = 800;
 
     private int spacing;
-    private int boardSize;
+    private int boardSizeX;
+    private int boardSizeY;
     private int cellSize;
     private int gridHeight;
     private int gridWidth;
@@ -30,13 +29,14 @@ class GUI extends JFrame {
         game = Game.getInstance();
 
         spacing = DEFAULT_SPACING;
-        boardSize = Main.DEFAULT_SIZE;
+        boardSizeX = board.getSizeX();
+        boardSizeY = board.getSizeY();
         cellSize = DEFAULT_CELL_SIZE;
         // each cell is padded by 1 spacing on the left and the right
         // 1 extra spacing is added on the left-most cell and right-most cell for evenness.
         // Two full spacings are added as a border for the whole boarding.
-        gridHeight = boardSize * cellSize + 6 * spacing;
-        gridWidth = boardSize * cellSize + 6 * spacing;
+        gridHeight = boardSizeY * cellSize + 6 * spacing;
+        gridWidth = boardSizeX * cellSize + 6 * spacing;
 
 
         setTitle("Mine Sweeper");
@@ -63,7 +63,7 @@ class GUI extends JFrame {
 
         public void paintComponent(Graphics g) {
 
-            setBounds((PANEL_WIDTH - gridWidth) / 2, (PANEL_HEIGHT - gridHeight) / 2, gridWidth, gridHeight);
+            setBounds((PANEL_WIDTH - gridWidth) / 2, (PANEL_HEIGHT - gridHeight) * 2 / 3, gridWidth, gridHeight);
 
             Board.Cell[][] grid = board.getGrid();
 
@@ -73,8 +73,8 @@ class GUI extends JFrame {
             int startY = 3 * spacing;
 
             // i's correspond to Y coordinates
-            for (int i = 0; i < boardSize; ++i) {
-                for (int j = 0; j < boardSize; ++j) {
+            for (int i = 0; i < boardSizeY; ++i) {
+                for (int j = 0; j < boardSizeX; ++j) {
 
                     Board.Cell cell = grid[i][j];
                     String str = "";

@@ -6,7 +6,10 @@ import java.util.Random;
  */
 public class Board {
 
-    private static Board instance = new Board(Main.DEFAULT_SIZE);
+    /**
+     * n rows, n columns
+     */
+    private static Board instance = new Board(Main.DEFAULT_SIZE_Y, Main.DEFAULT_SIZE_X);
 
     class Cell {
         private int nCloseBombs;
@@ -19,39 +22,41 @@ public class Board {
             this.isVisible = false;
         }
 
-        public int getnCloseBombs() {
+        int getnCloseBombs() {
             return nCloseBombs;
         }
 
-        public boolean isBomb() {
+        boolean isBomb() {
             return isBomb;
         }
 
-        public boolean isVisible() {
+        boolean isVisible() {
             return isVisible;
         }
     }
 
-    private int size;
+    private int sizeX;
+    private int sizeY;
     private Cell[][] grid;
     private int nTilesToUncover;
 
-    private Board(int n) {
-        this.size = n;
-        grid = new Cell[n][n];
+    private Board(int m, int n) {
+        this.sizeY = m;
+        this.sizeX = n;
+        setGrid(m, n);
     }
 
-    public static Board getInstance() {
+    static Board getInstance() {
         return instance;
     }
 
     void initialize(int numBombs) {
 
-        nTilesToUncover = size * size - numBombs;
+        nTilesToUncover = sizeX * sizeY - numBombs;
         // create cells and bombs
         int bombsToPlace = numBombs;
-        for (int row = 0; row < size; ++row ) {
-            for (int col = 0; col < size; ++col) {
+        for (int row = 0; row < sizeY; ++row ) {
+            for (int col = 0; col < sizeX; ++col) {
                 grid[row][col] = new Cell();
                 if (bombsToPlace > 0) {
                     grid[row][col].isBomb = true;
@@ -67,10 +72,10 @@ public class Board {
 
     private void shuffleBombs() {
         Random random = new Random();
-        for (int row = 0; row < size; ++row) {
-            for (int col = 0; col < size; ++col) {
-                int i = random.nextInt(size);
-                int j = random.nextInt(size);
+        for (int row = 0; row < sizeY; ++row) {
+            for (int col = 0; col < sizeX; ++col) {
+                int i = random.nextInt(sizeY);
+                int j = random.nextInt(sizeX);
 
                 //swap
                 if (row != i && col != j) {
@@ -88,8 +93,8 @@ public class Board {
                 { 0, -1},          { 0, 1},
                 { 1, -1}, { 1, 0}, { 1, 1}
         };
-        for (int row = 0; row < size; ++row) {
-            for (int col = 0; col < size; ++col) {
+        for (int row = 0; row < sizeY; ++row) {
+            for (int col = 0; col < sizeX; ++col) {
 
 
                 if (grid[row][col].isBomb) {
@@ -97,7 +102,7 @@ public class Board {
                         int i_child = row + delta[0];
                         int j_child = col + delta[1];
 
-                        if (i_child < 0 || i_child >= size || j_child < 0 || j_child >= size) {
+                        if (i_child < 0 || i_child >= sizeY || j_child < 0 || j_child >= sizeX) {
                             continue;
                         }
                         ++grid[i_child][j_child].nCloseBombs;
@@ -159,7 +164,7 @@ public class Board {
                 int i_child = visited[0] + delta[0];
                 int j_child = visited[1] + delta[1];
 
-                if (i_child < 0 || i_child >= size || j_child < 0 || j_child >= size) {
+                if (i_child < 0 || i_child >= sizeY || j_child < 0 || j_child >= sizeX) {
                     continue;
                 }
 
@@ -176,15 +181,32 @@ public class Board {
         return nTilesToUncover;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    public void setSizeX(int size) {
+        this.sizeX = size;
     }
 
-    public int getSize() {
-        return size;
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    public void setSizeY(int size) {
+        this.sizeY = size;
+    }
+
+    public int getSizeY() {
+        return sizeY;
     }
 
     public Cell[][] getGrid() {
         return grid;
+    }
+
+    /**
+     *
+     * @param m number of rows
+     * @param n number of columns
+     */
+    public void setGrid(int m, int n) {
+        grid = new Cell[m][n];
     }
 }

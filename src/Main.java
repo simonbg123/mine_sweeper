@@ -5,7 +5,8 @@ public class Main {
 
     private static Main instance = new Main();
 
-    public static final int DEFAULT_SIZE = 12;
+    public static final int DEFAULT_SIZE_Y = 12;
+    public static final int DEFAULT_SIZE_X = 15;
     private static final int DEFAULT_NUMBER_OF_BOMBS = 4;
     private static final int WIN_LEVEL = 8;
     private static final int BOMB_INCREMENT = 1;
