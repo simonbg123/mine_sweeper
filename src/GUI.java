@@ -10,8 +10,8 @@ class GUI extends JFrame {
     private static final int MEDIUM_GRID_SPACING = 1;
     private static final int LARGE_GRID_SPACING = 1;
     private static final int SMALL_GRID_CELL_SIZE = 50;
-    private static final int MEDIUM_GRID_CELL_SIZE = 38;
-    private static final int LARGE_GRID_CELL_SIZE = 30;
+    private static final int MEDIUM_GRID_CELL_SIZE = 36;
+    private static final int LARGE_GRID_CELL_SIZE = 28;
     private static final int WINDOW_WIDTH = 1186;
     private static final int WINDOW_HEIGHT = 829;
     private static final int PANEL_WIDTH = 1180;
@@ -81,7 +81,7 @@ class GUI extends JFrame {
 
         public void paintComponent(Graphics g) {
 
-            setBounds((PANEL_WIDTH - gridWidth) / 2, (PANEL_HEIGHT - gridHeight) * 2 / 3, gridWidth, gridHeight);
+            setBounds((PANEL_WIDTH - gridWidth) / 2, (PANEL_HEIGHT - gridHeight) * 6 / 9, gridWidth, gridHeight);
 
             Board.Cell[][] grid = board.getGrid();
 
@@ -106,7 +106,7 @@ class GUI extends JFrame {
                             g.setColor(Color.green);
                         }
                         else { g.setColor(Color.red); }
-                        str = "((*))";
+                        str = "((!))";
                     }
                     else if (cell.getnCloseBombs() > 0) {
                         g.setColor(Color.yellow);

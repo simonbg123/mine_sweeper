@@ -17,10 +17,10 @@ public class Main {
 
     public static final int SMALL_GRID_SIZE_Y = 10;
     public static final int SMALL_GRID_SIZE_X = 18;
-    public static final int MEDIUM_GRID_SIZE_Y = 14;
+    public static final int MEDIUM_GRID_SIZE_Y = 15;
     public static final int MEDIUM_GRID_SIZE_X = 25;
-    public static final int LARGE_GRID_SIZE_Y = 18;
-    public static final int LARGE_GRID_SIZE_X = 35;
+    public static final int LARGE_GRID_SIZE_Y = 20;
+    public static final int LARGE_GRID_SIZE_X = 36;
     private static final int WIN_LEVEL = 8;
 
     private static String LEVEL_COMPLETED = "Level completed!";

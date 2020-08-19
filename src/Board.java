@@ -9,7 +9,7 @@ public class Board {
     /**
      * n rows, n columns
      */
-    private static Board instance = new Board(Main.SMALL_GRID_SIZE_Y, Main.SMALL_GRID_SIZE_X);
+    private static Board instance = new Board(Main.MEDIUM_GRID_SIZE_Y, Main.MEDIUM_GRID_SIZE_X);
 
     class Cell {
         private int nCloseBombs;
