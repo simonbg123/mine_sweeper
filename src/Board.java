@@ -126,30 +126,7 @@ public class Board {
 
         return nTilesToUncover == 0 ? TurnResult.WIN : TurnResult.CONTINUE;
     }
-    //todo this will be overloaded with version that takes a gui arg
-    // ... which will call the ggui element's show method with the Board (or its grid) as arg.
-    public void showUpdatedBoard(boolean winningBoard) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n\n");
 
-        for (Cell[] row : grid) {
-            sb.append("----".repeat(size));
-            sb.append("\n");
-            for (Cell cell : row) {
-                sb.append("| ");
-                if (winningBoard || cell.isVisible) {
-                    if (cell.isBomb) sb.append("* ");
-                    else sb.append("" + cell.nCloseBombs + " ");
-                }
-                else sb.append("? ");
-            }
-            sb.append("|\n");
-        }
-        sb.append("----".repeat(size));
-        sb.append("\n\n");
-
-        System.out.println(sb.toString());
-    }
 
     private void flipNeighbours(int i, int j) {
         int[][] deltas = {

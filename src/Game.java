@@ -1,18 +1,24 @@
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Scanner;
 
 public class Game implements MouseListener {
+
+    enum State {
+        PLAYING,
+        WON,
+        LOST
+    }
+
     private static Game instance = null;
 
     private Board board;
     private GUI gui;
     private Main main;
-    private Scanner scan;
+    private State state;
 
     private Game() {
         board = Board.getInstance();
-        scan = new Scanner(System.in);
+        state = State.PLAYING;
     }
 
     public static Game getInstance() {
@@ -28,52 +34,41 @@ public class Game implements MouseListener {
 
     }
 
-    boolean play() {
-        TurnResult result = TurnResult.CONTINUE;
-        while (result == TurnResult.CONTINUE) {
-            int[] target = getCellToFlip();
-            result = board.flipTile(target[0], target[1]);
-            board.showUpdatedBoard(result == TurnResult.WIN);
-        }
-
-        return result == TurnResult.WIN;
+    void reset() {
+        state = State.PLAYING;
     }
 
-    private int[] getCellToFlip() {
-        int i = 0, j = 0;
-        boolean validInput = false;
+    void playTurn(int x, int y) {
 
-        while (!validInput) {
-            System.out.println("\n" + board.nTilesToUncover() + " tiles to uncover..." +
-                    "\nPlease enter row and column of cell to flip (ex: 2 8) :");
-            String input = scan.nextLine();
-            if (!input.matches("[1-9][0-9]*\\s+[1-9][0-9]*")) continue;
-            String[] ints = input.split("\\s+");
+        TurnResult result = board.flipTile(y, x);
 
-            int user_i = Integer.parseInt(ints[0]);
-            int user_j = Integer.parseInt(ints[1]);
-            if (user_i < 1 || user_i > board.getSize() || user_j < 1 || user_j > board.getSize()) continue;
-            i = user_i - 1;
-            j = user_j - 1;
-            if (board.tileIsVisible(i, j)) {
-                System.out.println("Tile is already visible.");
-            }
-            validInput = true;
+        if (result == TurnResult.WIN) {
+            state = State.WON;
+        }
+        else if (result == TurnResult.LOSS) {
+            state = State.LOST;
         }
 
-        return new int[]{i, j};
+        main.update(state);
+
     }
 
+    public State getState() {
+        return state;
+    }
 
+    public void setState(State state) {
+        this.state = state;
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {
 
+        if (!(state == State.PLAYING)) return;
+
         int i = gui.getIfromY(e.getY());
         int j = gui.getJfromX(e.getX());
-        System.out.println(i + " " + j);
-        System.out.println(board.getGrid()[i][j].getnCloseBombs());
-
+        playTurn(j, i);
     }
 
     @Override

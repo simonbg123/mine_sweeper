@@ -9,7 +9,7 @@ class GUI extends JFrame {
     private static GUI instance = null;
 
     private static final int DEFAULT_SPACING = 2;
-    private static final int DEFAULT_CELL_SIZE = 60;
+    private static final int DEFAULT_CELL_SIZE = 40;
     private static final int WINDOW_WIDTH = 1186;
     private static final int WINDOW_HEIGHT = 829;
     private static final int PANEL_WIDTH = 1180;
@@ -76,12 +76,16 @@ class GUI extends JFrame {
 
                     Board.Cell cell = grid[i][j];
                     String str = "";
+                    Game.State gameState = game.getState();
 
-                    if (!cell.isVisible()) {
+                    if (!cell.isVisible() && gameState != Game.State.WON) {
                         g.setColor(Color.gray);
                     }
                     else if (cell.isBomb()) {
-                        g.setColor(Color.red);
+                        if (gameState == Game.State.WON) {
+                            g.setColor(Color.green);
+                        }
+                        else { g.setColor(Color.red); }
                         str = "((*))";
                     }
                     else if (cell.getnCloseBombs() > 0) {
