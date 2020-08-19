@@ -6,8 +6,12 @@ class GUI extends JFrame {
 
     private static GUI instance = null;
 
-    private static final int DEFAULT_SPACING = 2;
-    private static final int DEFAULT_CELL_SIZE = 40;
+    private static final int SMALL_GRID_SPACING = 2;
+    private static final int MEDIUM_GRID_SPACING = 1;
+    private static final int LARGE_GRID_SPACING = 1;
+    private static final int SMALL_GRID_CELL_SIZE = 50;
+    private static final int MEDIUM_GRID_CELL_SIZE = 38;
+    private static final int LARGE_GRID_CELL_SIZE = 30;
     private static final int WINDOW_WIDTH = 1186;
     private static final int WINDOW_HEIGHT = 829;
     private static final int PANEL_WIDTH = 1180;
@@ -28,10 +32,24 @@ class GUI extends JFrame {
         board = Board.getInstance();
         game = Game.getInstance();
 
-        spacing = DEFAULT_SPACING;
         boardSizeX = board.getSizeX();
         boardSizeY = board.getSizeY();
-        cellSize = DEFAULT_CELL_SIZE;
+
+        switch (boardSizeX) {
+            case Main.SMALL_GRID_SIZE_X:
+                spacing = SMALL_GRID_SPACING;
+                cellSize = SMALL_GRID_CELL_SIZE;
+                break;
+            case Main.MEDIUM_GRID_SIZE_X:
+                spacing = MEDIUM_GRID_SPACING;
+                cellSize = MEDIUM_GRID_CELL_SIZE;
+                break;
+            case Main.LARGE_GRID_SIZE_X:
+                spacing = LARGE_GRID_SPACING;
+                cellSize = LARGE_GRID_CELL_SIZE;
+                break;
+        }
+
         // each cell is padded by 1 spacing on the left and the right
         // 1 extra spacing is added on the left-most cell and right-most cell for evenness.
         // Two full spacings are added as a border for the whole boarding.
