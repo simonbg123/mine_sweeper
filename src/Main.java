@@ -1,7 +1,13 @@
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 //todo make this configurable: one game, or increasing levels
 // change size of board
 // difficulty (for one game = number of bombs; for increasing levels, starting number of bombs + increment)
-public class Main {
+public class Main implements ActionListener {
 
     enum Mode {
         SINGLE_GAME,
@@ -47,55 +53,50 @@ public class Main {
         bombIncrement = setBombIncrement();
         currentLevel = 1;
         board.initialize(nBombs);
-        gui = GUI.getInstance();
+        gui = GUI.getInstance(getLevelAnnouncement());
         game = Game.getInstance();
-
     }
 
     public static Main getInstance() {
         return instance;
     }
 
-    private static void init() {
+    private void init() {
         // the Game singleton acquires its reference to GUI and Main
         // once all instances have been constructed
         Game.getInstance().initialize();
-        //config.gui.addListener, etc.
+        gui.setContinueButtonListener(this);
+        gui.setRestartButtonListener(this);
+        //gui.setModeMenuListener(this);
     }
 
     void update(Game.State gameState) {
 
         if (gameState == Game.State.WON) {
             if (currentLevel == winLevel) {
-                // todo announce victory
+                gui.setAnnouncementString(LEVELS_FINISHED);
             }
             else {
-                //todo announce level completed, show continue button (or directives to click anywhere)
-
-                //todo below happens only when user presses continue
-                /*nBombs += bombIncrement;
-                ++currentLevel;
-                String announcement = getLevelAnnouncement(currentLevel, nBombs);
-                // todo announce current level
-                board.initialize(nBombs);
-                game.setState(Game.State.PLAYING);*/
-                // will actually be displayed when user presses continue
-
+                gui.setAnnouncementString(LEVEL_COMPLETED);
+                gui.setContinueIsVisible(true);
             }
         }
         else if (gameState == Game.State.LOST) {
-            // todo announce lost
+            gui.setAnnouncementString(GAME_LOST);
         }
-        else {
-            //todo announce number of tiles remaining
+        else if (gameState == Game.State.PLAYING){
+            gui.setAnnouncementString(getLevelAnnouncement());
+
         }
 
-        gui.repaint();
+        gui.repaint(1);
 
     }
 
-    private String getLevelAnnouncement(int level, int nBombs) {
-        return "LEVEL " + level + "/" + winLevel + " : " + nBombs + " bombs";
+    private String getLevelAnnouncement() {
+        return  "<html>LEVEL " + currentLevel + "/" + winLevel + "<br>" +
+                "BOMBS      : " + nBombs + "<br>" +
+                "TILES LEFT : " + board.nTilesToUncover() + "</html>";
     }
 
     private int setInitialnBombs() {
@@ -130,17 +131,39 @@ public class Main {
     }
 
     private int setBombIncrement() {
-        return 10 * board.getSizeX() * board.getSizeY() / 100;
+        return 10 * board.getSizeX() * board.getSizeY() / 100 / winLevel;
     }
 
-    //todo add event listeners linked to menu options to change Main's attributes
-    // as well button listener for start button which will initialize the board
-    // and reset Game
-    // as well as continue button
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        Object o = e.getSource();
+        if (o == gui.getContinueButton()) {
+
+            gui.setContinueIsVisible(false);
+
+            nBombs += bombIncrement;
+            ++currentLevel;
+            board.initialize(nBombs);
+            gui.setAnnouncementString(getLevelAnnouncement());
+            game.setState(Game.State.PLAYING);
+        }
+        else if (o == gui.getRestartButton()) {
+
+            nBombs = setInitialnBombs();
+            bombIncrement = setBombIncrement();
+            currentLevel = 1;
+            board.initialize(nBombs);
+            gui.setAnnouncementString(getLevelAnnouncement());
+            game.reset();
+        }
+        gui.repaint();
+
+    }
+
 
     public static void main(String[] args) {
 
-        init();
-        // provide first announcement
+        Main.getInstance().init();
     }
 }
