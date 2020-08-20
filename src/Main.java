@@ -1,6 +1,3 @@
-import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -49,7 +46,7 @@ public class Main implements ActionListener {
         mode = Mode.MULTILEVEL;
         difficulty = Difficulty.EASY;
         nBombs = setInitialnBombs();
-        winLevel = WIN_LEVEL;
+        winLevel = setWinLevel();
         bombIncrement = setBombIncrement();
         currentLevel = 1;
         board.initialize(nBombs);
@@ -67,7 +64,14 @@ public class Main implements ActionListener {
         Game.getInstance().initialize();
         gui.setContinueButtonListener(this);
         gui.setRestartButtonListener(this);
-        //gui.setModeMenuListener(this);
+        gui.setSingleGameModeListener(this);
+        gui.setMultilevelModeListener(this);
+        gui.setEasyDifficultyListener(this);
+        gui.setMediumDifficultyListener(this);
+        gui.setHardDifficultyListener(this);
+        gui.setSmallGridListener(this);
+        gui.setMediumGridListener(this);
+        gui.setLargeGridListener(this);
     }
 
     void update(Game.State gameState) {
@@ -134,10 +138,15 @@ public class Main implements ActionListener {
         return 10 * board.getSizeX() * board.getSizeY() / 100 / winLevel;
     }
 
+    private int setWinLevel() {
+        return mode == Mode.MULTILEVEL ? WIN_LEVEL : 1;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
         Object o = e.getSource();
+
         if (o == gui.getContinueButton()) {
 
             gui.setContinueIsVisible(false);
@@ -147,16 +156,61 @@ public class Main implements ActionListener {
             board.initialize(nBombs);
             gui.setAnnouncementString(getLevelAnnouncement());
             game.setState(Game.State.PLAYING);
+
+            gui.repaint();
         }
         else if (o == gui.getRestartButton()) {
 
-            nBombs = setInitialnBombs();
-            bombIncrement = setBombIncrement();
-            currentLevel = 1;
-            board.initialize(nBombs);
-            gui.setAnnouncementString(getLevelAnnouncement());
-            game.reset();
+            restartGame();
         }
+        else if (o == gui.getSingleGameModeOption()) {
+            mode = Mode.SINGLE_GAME;
+        }
+        else if (o == gui.getMultilevelModeOption()) {
+            mode = Mode.MULTILEVEL;
+        }
+        else if (o == gui.getDifficultyEasyOption()) {
+            difficulty = Difficulty.EASY;
+        }
+        else if (o == gui.getDifficultyMediumOption()) {
+            difficulty = Difficulty.MEDIUM;
+        }
+        else if (o == gui.getDifficultyHardOption()) {
+            difficulty = Difficulty.HARD;
+        }
+        else if (o == gui.getSmallGridOption()) {
+            board.setSizeX(SMALL_GRID_SIZE_X);
+            board.setSizeY(SMALL_GRID_SIZE_Y);
+            board.setGrid();
+            gui.init();
+            restartGame();
+        }
+        else if (o == gui.getMediumGridOption()) {
+            board.setSizeX(MEDIUM_GRID_SIZE_X);
+            board.setSizeY(MEDIUM_GRID_SIZE_Y);
+            board.setGrid();
+            gui.init();
+            restartGame();
+        }
+        else if (o == gui.getLargeGridOption()) {
+            board.setSizeX(LARGE_GRID_SIZE_X);
+            board.setSizeY(LARGE_GRID_SIZE_Y);
+            board.setGrid();
+            gui.init();
+            restartGame();
+
+        }
+    }
+
+    private void restartGame() {
+        nBombs = setInitialnBombs();
+        bombIncrement = setBombIncrement();
+        winLevel = setWinLevel();
+        currentLevel = 1;
+        board.initialize(nBombs);
+        gui.setAnnouncementString(getLevelAnnouncement());
+        game.reset();
+
         gui.repaint();
 
     }

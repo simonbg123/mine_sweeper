@@ -43,7 +43,7 @@ public class Board {
     private Board(int m, int n) {
         this.sizeY = m;
         this.sizeX = n;
-        setGrid(m, n);
+        setGrid();
     }
 
     static Board getInstance() {
@@ -201,12 +201,8 @@ public class Board {
         return grid;
     }
 
-    /**
-     *
-     * @param m number of rows
-     * @param n number of columns
-     */
-    public void setGrid(int m, int n) {
-        grid = new Cell[m][n];
+
+    void setGrid() {
+        grid = new Cell[sizeY][sizeX];
     }
 }

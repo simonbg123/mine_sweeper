@@ -1,6 +1,5 @@
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -32,7 +31,9 @@ class GUI extends JFrame {
     static final String EASY_OPTION_STRING = "Easy";
     static final String MEDIUM_OPTION_STRING = "Medium";
     static final String HARD_OPTION_STRING = "Hard";
-
+    static final String SMALL_GRID_OPTION_STRING = "Small";
+    static final String MEDIUM_GRID_OPTION_STRING = "Medium";
+    static final String LARGE_GRID_OPTION_STRING = "Large";
 
     private int spacing;
     private int boardSizeX;
@@ -52,14 +53,16 @@ class GUI extends JFrame {
     private JButton continueButton;
     private JButton restartButton;
 
-    private JMenu modeMenu;
-    private JMenu difficultyMenu;
+    private JRadioButtonMenuItem singleGameModeOption;
+    private JRadioButtonMenuItem multilevelModeOption;
+    private JRadioButtonMenuItem difficultyEasyOption;
+    private JRadioButtonMenuItem difficultyMediumOption;
+    private JRadioButtonMenuItem difficultyHardOption;
+    private JRadioButtonMenuItem smallGridOption;
+    private JRadioButtonMenuItem mediumGridOption;
+    private JRadioButtonMenuItem largeGridOption;
 
-    private JRadioButtonMenuItem singleGameMode;
-    private JRadioButtonMenuItem multilevelMode;
-    private JRadioButtonMenuItem difficultyEasy;
-    private JRadioButtonMenuItem difficultyMedium;
-    private JRadioButtonMenuItem difficultyHard;
+    private BoardGUI boardGUI;
 
 
     private GUI(String announcementStr) {
@@ -71,6 +74,32 @@ class GUI extends JFrame {
         board = Board.getInstance();
         game = Game.getInstance();
 
+        setTitle("Mine Sweeper");
+        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        init();
+
+
+        OptionsPanel optionsPanel = new OptionsPanel();
+        optionsPanel.setBounds(5, 5, OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT);
+        add(optionsPanel);
+
+        AnnouncementPanel announcementPanel = new AnnouncementPanel(new BorderLayout());
+        announcementPanel.setBounds(5 + OPTIONS_PANEL_WIDTH + 5, 5, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT );
+        add(announcementPanel);
+
+
+        //getContentPane().setBackground(Color.cyan);
+
+        setVisible(true);
+        setResizable(false);
+
+        repaint();
+
+    }
+
+    void init() {
         boardSizeX = board.getSizeX();
         boardSizeY = board.getSizeY();
 
@@ -95,31 +124,12 @@ class GUI extends JFrame {
         gridHeight = boardSizeY * cellSize + 6 * spacing;
         gridWidth = boardSizeX * cellSize + 6 * spacing;
 
+        if (boardGUI != null) remove(boardGUI);
 
-        setTitle("Mine Sweeper");
-        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        boardGUI = new BoardGUI();
+        boardGUI.setBounds((PANEL_WIDTH - gridWidth) / 2, (PANEL_HEIGHT - gridHeight) * 6 / 9, gridWidth, gridHeight);
 
-        BoardGUI gameBoard = new BoardGUI();
-        gameBoard.setBounds((PANEL_WIDTH - gridWidth) / 2, (PANEL_HEIGHT - gridHeight) * 6 / 9, gridWidth, gridHeight);
-        add(gameBoard);
-
-        OptionsPanel optionsPanel = new OptionsPanel();
-        optionsPanel.setBounds(5, 5, OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT);
-        add(optionsPanel);
-
-        AnnouncementPanel announcementPanel = new AnnouncementPanel(new BorderLayout());
-        announcementPanel.setBounds(5 + OPTIONS_PANEL_WIDTH + 5, 5, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT );
-        add(announcementPanel);
-
-
-        //getContentPane().setBackground(Color.cyan);
-
-        setVisible(true);
-        setResizable(false);
-
-        repaint();
-
+        add(boardGUI);
     }
 
     public static GUI getInstance(String str) {
@@ -199,29 +209,50 @@ class GUI extends JFrame {
 
     class OptionsPanel extends JPanel {
 
+        private JMenu modeMenu;
+        private JMenu difficultyMenu;
+        private JMenu boardSizeMenu;
+        private ButtonGroup difficultyButtonGroup;
+        private ButtonGroup boardSizeButtonGroup;
+
         public OptionsPanel() {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
             modeMenu = new JMenu("Mode");
-            modeMenu.setSize(new Dimension(OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT / 3));
-            singleGameMode = new JRadioButtonMenuItem(SINGLE_GAME_OPTION_STRING);
-            multilevelMode = new JRadioButtonMenuItem(MULTILEVEL_OPTION_STRING);
-            modeMenu.add(singleGameMode);
-            modeMenu.add(multilevelMode);
+            singleGameModeOption = new JRadioButtonMenuItem(SINGLE_GAME_OPTION_STRING);
+            multilevelModeOption = new JRadioButtonMenuItem(MULTILEVEL_OPTION_STRING);
+            modeMenu.add(singleGameModeOption);
+            modeMenu.add(multilevelModeOption);
 
             difficultyMenu = new JMenu("Difficulty");
-            difficultyMenu.setSize(OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT / 3);
-            difficultyEasy = new JRadioButtonMenuItem(EASY_OPTION_STRING);
-            difficultyMedium = new JRadioButtonMenuItem(MEDIUM_OPTION_STRING);
-            difficultyHard = new JRadioButtonMenuItem(HARD_OPTION_STRING);
-            difficultyMenu.add(difficultyEasy);
-            difficultyMenu.add(difficultyMedium);
-            difficultyMenu.add(difficultyHard);
+            difficultyButtonGroup = new ButtonGroup();
+            difficultyEasyOption = new JRadioButtonMenuItem(EASY_OPTION_STRING);
+            difficultyMediumOption = new JRadioButtonMenuItem(MEDIUM_OPTION_STRING);
+            difficultyHardOption = new JRadioButtonMenuItem(HARD_OPTION_STRING);
+            difficultyButtonGroup.add(difficultyEasyOption);
+            difficultyButtonGroup.add(difficultyMediumOption);
+            difficultyButtonGroup.add(difficultyHardOption);
+            difficultyMenu.add(difficultyEasyOption);
+            difficultyMenu.add(difficultyMediumOption);
+            difficultyMenu.add(difficultyHardOption);
+
+            boardSizeMenu = new JMenu("Board Size");
+            boardSizeButtonGroup = new ButtonGroup();
+            smallGridOption = new JRadioButtonMenuItem(SMALL_GRID_OPTION_STRING);
+            mediumGridOption = new JRadioButtonMenuItem(MEDIUM_GRID_OPTION_STRING);
+            largeGridOption = new JRadioButtonMenuItem(LARGE_GRID_OPTION_STRING);
+            boardSizeButtonGroup.add(smallGridOption);
+            boardSizeButtonGroup.add(mediumGridOption);
+            boardSizeButtonGroup.add(largeGridOption);
+            boardSizeMenu.add(smallGridOption);
+            boardSizeMenu.add(mediumGridOption);
+            boardSizeMenu.add(largeGridOption);
 
             JMenuBar menuBar = new JMenuBar();
             menuBar.add(modeMenu);
             menuBar.add(difficultyMenu);
+            menuBar.add(boardSizeMenu);
 
             restartButton = new JButton("Restart");
             restartButton.setSize(OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT / 3);
@@ -314,5 +345,69 @@ class GUI extends JFrame {
 
     public JButton getRestartButton() {
         return restartButton;
+    }
+
+    public JRadioButtonMenuItem getSingleGameModeOption() {
+        return singleGameModeOption;
+    }
+
+    void setSingleGameModeListener(ActionListener l) {
+        singleGameModeOption.addActionListener(l);
+    }
+
+    public JRadioButtonMenuItem getMultilevelModeOption() {
+        return multilevelModeOption;
+    }
+
+    void setMultilevelModeListener(ActionListener l) {
+        multilevelModeOption.addActionListener(l);
+    }
+
+    public JRadioButtonMenuItem getDifficultyEasyOption() {
+        return difficultyEasyOption;
+    }
+
+    void setEasyDifficultyListener(ActionListener l) {
+        difficultyEasyOption.addActionListener(l);
+    }
+
+    public JRadioButtonMenuItem getDifficultyMediumOption() {
+        return difficultyMediumOption;
+    }
+
+    void setMediumDifficultyListener(ActionListener l) {
+        difficultyMediumOption.addActionListener(l);
+    }
+
+    public JRadioButtonMenuItem getDifficultyHardOption() {
+        return difficultyHardOption;
+    }
+
+    void setHardDifficultyListener(ActionListener l) {
+        difficultyHardOption.addActionListener(l);
+    }
+
+    public JRadioButtonMenuItem getSmallGridOption() {
+        return smallGridOption;
+    }
+
+    void setSmallGridListener(ActionListener l) {
+        smallGridOption.addActionListener(l);
+    }
+
+    public JRadioButtonMenuItem getMediumGridOption() {
+        return mediumGridOption;
+    }
+
+    void setMediumGridListener(ActionListener l) {
+        mediumGridOption.addActionListener(l);
+    }
+
+    public JRadioButtonMenuItem getLargeGridOption() {
+        return largeGridOption;
+    }
+
+    void setLargeGridListener(ActionListener l) {
+        largeGridOption.addActionListener(l);
     }
 }
