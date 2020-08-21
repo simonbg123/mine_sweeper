@@ -2,11 +2,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-//todo get rid of options panel. make the restart button a WEST component
-// of the top announcement panel.
-// rename announcement panel as top panel.
-// move menu stuff into the JFrame constructor
-
 public class Main implements ActionListener {
 
     enum Mode {
@@ -19,15 +14,19 @@ public class Main implements ActionListener {
         HARD
     }
 
-    private static Main instance = new Main();
 
-    public static final int SMALL_GRID_SIZE_Y = 10;
-    public static final int SMALL_GRID_SIZE_X = 18;
-    public static final int MEDIUM_GRID_SIZE_Y = 15;
-    public static final int MEDIUM_GRID_SIZE_X = 25;
-    public static final int LARGE_GRID_SIZE_Y = 20;
-    public static final int LARGE_GRID_SIZE_X = 36;
+    static final int SMALL_GRID_SIZE_Y = 10;
+    static final int SMALL_GRID_SIZE_X = 18;
+    static final int MEDIUM_GRID_SIZE_Y = 15;
+    static final int MEDIUM_GRID_SIZE_X = 25;
+    static final int LARGE_GRID_SIZE_Y = 20;
+    static final int LARGE_GRID_SIZE_X = 36;
     private static final int WIN_LEVEL = 8;
+
+    static final Difficulty DEFAULT_DIFFICULTY = Difficulty.EASY;
+    static final Mode DEFAULT_MODE = Mode.MULTILEVEL;
+    static final int DEFAULT_GRID_SIZE_Y = SMALL_GRID_SIZE_Y;
+    static final int DEFAULT_GRID_SIZE_X = SMALL_GRID_SIZE_X;
 
     private static final String LEVEL_COMPLETED = "LEVEL COMPLETED!";
     private static final String LEVELS_FINISHED = "CONGRATULATIONS, YOU HAVE WON!!!";
@@ -47,10 +46,12 @@ public class Main implements ActionListener {
     private Game game;
     private Board board;
 
+    private static Main instance = new Main();
+    
     private Main() {
         board = Board.getInstance();
-        mode = Mode.MULTILEVEL;
-        difficulty = Difficulty.EASY;
+        mode = DEFAULT_MODE;
+        difficulty = DEFAULT_DIFFICULTY;
         nBombs = setInitialnBombs();
         winLevel = setWinLevel();
         bombIncrement = setBombIncrement();
@@ -185,12 +186,15 @@ public class Main implements ActionListener {
             difficulty = Difficulty.HARD;
         }
         else if (actionCommand.equals(GUI.SMALL_BOARD_OPTION_STRING)) {
+            if (board.getSizeX() == SMALL_GRID_SIZE_X) return; // current value was selected
             processBoardSizeChangeRequest(actionCommand);
         }
         else if (actionCommand.equals(GUI.MEDIUM_BOARD_OPTION_STRING)) {
+            if (board.getSizeX() == MEDIUM_GRID_SIZE_X) return; // current value was selected
             processBoardSizeChangeRequest(actionCommand);
         }
         else if (actionCommand.equals(GUI.LARGE_BOARD_OPTION_STRING)) {
+            if (board.getSizeX() == LARGE_GRID_SIZE_X) return; // current value was selected
             processBoardSizeChangeRequest(actionCommand);
         }
     }

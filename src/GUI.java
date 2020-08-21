@@ -94,6 +94,12 @@ class GUI extends JFrame {
         JMenu modeMenu = new JMenu("Mode");
         singleGameModeOption = new JRadioButtonMenuItem(SINGLE_GAME_OPTION_STRING);
         multilevelModeOption = new JRadioButtonMenuItem(MULTILEVEL_OPTION_STRING);
+        if (Main.DEFAULT_MODE == Main.Mode.MULTILEVEL) {
+            multilevelModeOption.setSelected(true);
+        }
+        else if (Main.DEFAULT_MODE == Main.Mode.SINGLE_GAME) {
+            singleGameModeOption.setSelected(true);
+        }
         modeMenu.add(singleGameModeOption);
         modeMenu.add(multilevelModeOption);
 
@@ -102,6 +108,17 @@ class GUI extends JFrame {
         difficultyEasyOption = new JRadioButtonMenuItem(EASY_OPTION_STRING);
         difficultyMediumOption = new JRadioButtonMenuItem(MEDIUM_OPTION_STRING);
         difficultyHardOption = new JRadioButtonMenuItem(HARD_OPTION_STRING);
+
+        if (Main.DEFAULT_DIFFICULTY == Main.Difficulty.EASY) {
+            difficultyEasyOption.setSelected(true);
+        }
+        else if (Main.DEFAULT_DIFFICULTY == Main.Difficulty.MEDIUM) {
+            difficultyMediumOption.setSelected(true);
+        }
+        else if (Main.DEFAULT_DIFFICULTY == Main.Difficulty.HARD) {
+            difficultyHardOption.setSelected(true);
+        }
+
         difficultyButtonGroup.add(difficultyEasyOption);
         difficultyButtonGroup.add(difficultyMediumOption);
         difficultyButtonGroup.add(difficultyHardOption);
@@ -114,6 +131,17 @@ class GUI extends JFrame {
         smallGridOption = new JRadioButtonMenuItem(SMALL_BOARD_OPTION_STRING);
         mediumGridOption = new JRadioButtonMenuItem(MEDIUM_BOARD_OPTION_STRING);
         largeGridOption = new JRadioButtonMenuItem(LARGE_BOARD_OPTION_STRING);
+
+        if (board.getSizeY() == Main.SMALL_GRID_SIZE_Y) {
+            smallGridOption.setSelected(true);
+        }
+        else if (board.getSizeY() == Main.MEDIUM_GRID_SIZE_Y) {
+            mediumGridOption.setSelected(true);
+        }
+        else if (board.getSizeY() == Main.LARGE_GRID_SIZE_Y) {
+            largeGridOption.setSelected(true);
+        }
+
         boardSizeButtonGroup.add(smallGridOption);
         boardSizeButtonGroup.add(mediumGridOption);
         boardSizeButtonGroup.add(largeGridOption);
