@@ -179,6 +179,7 @@ public class Board {
 
             current.isVisible = true;
             --nTilesToUncover;
+            if (nTilesToUncover == 0) return;
 
             if (current.nCloseBombs > 0) {
                 continue;
