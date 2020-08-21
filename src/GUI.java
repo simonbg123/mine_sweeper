@@ -81,7 +81,7 @@ class GUI extends JFrame {
         init();
 
 
-        OptionsPanel optionsPanel = new OptionsPanel(new BorderLayout());
+        OptionsPanel optionsPanel = new OptionsPanel();
         optionsPanel.setBounds(5, 5, OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT);
         add(optionsPanel);
 
@@ -215,8 +215,8 @@ class GUI extends JFrame {
         private ButtonGroup difficultyButtonGroup;
         private ButtonGroup boardSizeButtonGroup;
 
-        public OptionsPanel(LayoutManager layout) {
-            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        public OptionsPanel() {
+            setLayout(null);
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
             modeMenu = new JMenu("Mode");
@@ -255,17 +255,29 @@ class GUI extends JFrame {
             menuBar.add(boardSizeMenu);
 
             restartButton = new JButton("Restart");
-            restartButton.setSize(OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT / 3);
+            restartButton.setBounds(2, 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3 );
+            //restartButton.setDisabledSelectedIcon(restartButton.getDisabledSelectedIcon());
+
+            // the listener for this button is given in Main in the init() method since
+            // this class is constructed inside Main's constructor
+            continueButton = new JButton("Continue");
+            continueButton.setBounds(2, OPTIONS_PANEL_HEIGHT / 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3);
 
             setJMenuBar(menuBar);
-            add(restartButton, BorderLayout.CENTER);
+            add(restartButton);
+            add(continueButton);
+
 
         }
 
         public void paintComponent(Graphics g) {
 
-            /*g.setColor(Color.WHITE);
-            g.fillRect(0, 0, OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT);*/
+            //restartButton.setSize(OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 4);
+
+            //continueButton.setSize(OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 4);
+            continueButton.setEnabled(continueIsVisible);
+
+
 
 
 
@@ -283,11 +295,7 @@ class GUI extends JFrame {
             super(layout);
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
-            // the listener for this button is given in Main in the init() method since
-            // this class is constructed inside Main's constructor
-            continueButton = new JButton("Continue");
-            continueButton.setVisible(continueIsVisible);
-            add(continueButton, BorderLayout.EAST);
+
 
             announcementLabel = new JLabel();
             announcementLabel.setFont(new Font("Monospace", Font.BOLD, 20));
@@ -298,7 +306,6 @@ class GUI extends JFrame {
 
             announcementLabel.setText(announcementString);
             announcementLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            continueButton.setVisible(continueIsVisible);
             g.setColor(new JButton().getBackground());
             g.fillRect(0, 0, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT);
 
