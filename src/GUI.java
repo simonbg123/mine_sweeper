@@ -65,7 +65,9 @@ class GUI extends JFrame {
     private BoardGUI boardGUI;
 
 
+
     private GUI(String announcementStr) {
+
 
         setLayout(null);
 
@@ -81,7 +83,7 @@ class GUI extends JFrame {
         init();
 
 
-        OptionsPanel optionsPanel = new OptionsPanel();
+        TopLeftPanel optionsPanel = new TopLeftPanel();
         optionsPanel.setBounds(5, 5, OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT);
         add(optionsPanel);
 
@@ -89,8 +91,42 @@ class GUI extends JFrame {
         announcementPanel.setBounds(5 + OPTIONS_PANEL_WIDTH + 5, 5, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT );
         add(announcementPanel);
 
+        JMenu modeMenu = new JMenu("Mode");
+        singleGameModeOption = new JRadioButtonMenuItem(SINGLE_GAME_OPTION_STRING);
+        multilevelModeOption = new JRadioButtonMenuItem(MULTILEVEL_OPTION_STRING);
+        modeMenu.add(singleGameModeOption);
+        modeMenu.add(multilevelModeOption);
 
-        //getContentPane().setBackground(Color.cyan);
+        JMenu difficultyMenu = new JMenu("Difficulty");
+        ButtonGroup difficultyButtonGroup = new ButtonGroup();
+        difficultyEasyOption = new JRadioButtonMenuItem(EASY_OPTION_STRING);
+        difficultyMediumOption = new JRadioButtonMenuItem(MEDIUM_OPTION_STRING);
+        difficultyHardOption = new JRadioButtonMenuItem(HARD_OPTION_STRING);
+        difficultyButtonGroup.add(difficultyEasyOption);
+        difficultyButtonGroup.add(difficultyMediumOption);
+        difficultyButtonGroup.add(difficultyHardOption);
+        difficultyMenu.add(difficultyEasyOption);
+        difficultyMenu.add(difficultyMediumOption);
+        difficultyMenu.add(difficultyHardOption);
+
+        JMenu boardSizeMenu = new JMenu("Board Size");
+        ButtonGroup boardSizeButtonGroup = new ButtonGroup();
+        smallGridOption = new JRadioButtonMenuItem(SMALL_BOARD_OPTION_STRING);
+        mediumGridOption = new JRadioButtonMenuItem(MEDIUM_BOARD_OPTION_STRING);
+        largeGridOption = new JRadioButtonMenuItem(LARGE_BOARD_OPTION_STRING);
+        boardSizeButtonGroup.add(smallGridOption);
+        boardSizeButtonGroup.add(mediumGridOption);
+        boardSizeButtonGroup.add(largeGridOption);
+        boardSizeMenu.add(smallGridOption);
+        boardSizeMenu.add(mediumGridOption);
+        boardSizeMenu.add(largeGridOption);
+
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(modeMenu);
+        menuBar.add(difficultyMenu);
+        menuBar.add(boardSizeMenu);
+
+        setJMenuBar(menuBar);
 
         setVisible(true);
         setResizable(false);
@@ -207,52 +243,11 @@ class GUI extends JFrame {
         }
     }
 
-    class OptionsPanel extends JPanel {
+    class TopLeftPanel extends JPanel {
 
-        private JMenu modeMenu;
-        private JMenu difficultyMenu;
-        private JMenu boardSizeMenu;
-        private ButtonGroup difficultyButtonGroup;
-        private ButtonGroup boardSizeButtonGroup;
-
-        public OptionsPanel() {
+        TopLeftPanel() {
             setLayout(null);
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-
-            modeMenu = new JMenu("Mode");
-            singleGameModeOption = new JRadioButtonMenuItem(SINGLE_GAME_OPTION_STRING);
-            multilevelModeOption = new JRadioButtonMenuItem(MULTILEVEL_OPTION_STRING);
-            modeMenu.add(singleGameModeOption);
-            modeMenu.add(multilevelModeOption);
-
-            difficultyMenu = new JMenu("Difficulty");
-            difficultyButtonGroup = new ButtonGroup();
-            difficultyEasyOption = new JRadioButtonMenuItem(EASY_OPTION_STRING);
-            difficultyMediumOption = new JRadioButtonMenuItem(MEDIUM_OPTION_STRING);
-            difficultyHardOption = new JRadioButtonMenuItem(HARD_OPTION_STRING);
-            difficultyButtonGroup.add(difficultyEasyOption);
-            difficultyButtonGroup.add(difficultyMediumOption);
-            difficultyButtonGroup.add(difficultyHardOption);
-            difficultyMenu.add(difficultyEasyOption);
-            difficultyMenu.add(difficultyMediumOption);
-            difficultyMenu.add(difficultyHardOption);
-
-            boardSizeMenu = new JMenu("Board Size");
-            boardSizeButtonGroup = new ButtonGroup();
-            smallGridOption = new JRadioButtonMenuItem(SMALL_BOARD_OPTION_STRING);
-            mediumGridOption = new JRadioButtonMenuItem(MEDIUM_BOARD_OPTION_STRING);
-            largeGridOption = new JRadioButtonMenuItem(LARGE_BOARD_OPTION_STRING);
-            boardSizeButtonGroup.add(smallGridOption);
-            boardSizeButtonGroup.add(mediumGridOption);
-            boardSizeButtonGroup.add(largeGridOption);
-            boardSizeMenu.add(smallGridOption);
-            boardSizeMenu.add(mediumGridOption);
-            boardSizeMenu.add(largeGridOption);
-
-            JMenuBar menuBar = new JMenuBar();
-            menuBar.add(modeMenu);
-            menuBar.add(difficultyMenu);
-            menuBar.add(boardSizeMenu);
 
             restartButton = new JButton("Restart");
             restartButton.setBounds(2, 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3 );
@@ -263,7 +258,6 @@ class GUI extends JFrame {
             continueButton = new JButton("Continue");
             continueButton.setBounds(2, OPTIONS_PANEL_HEIGHT / 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3);
 
-            setJMenuBar(menuBar);
             add(restartButton);
             add(continueButton);
 
@@ -271,34 +265,21 @@ class GUI extends JFrame {
         }
 
         public void paintComponent(Graphics g) {
-
-            //restartButton.setSize(OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 4);
-
-            //continueButton.setSize(OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 4);
             continueButton.setEnabled(continueIsVisible);
-
-
-
-
-
-
         }
     }
 
     class AnnouncementPanel extends JPanel {
 
-
         JLabel announcementLabel;
-
 
         AnnouncementPanel(LayoutManager layout) {
             super(layout);
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
-
-
             announcementLabel = new JLabel();
             announcementLabel.setFont(new Font("Monospace", Font.BOLD, 20));
+            announcementLabel.setForeground(Color.BLUE);
             add(announcementLabel, BorderLayout.CENTER);
         }
 
@@ -308,6 +289,7 @@ class GUI extends JFrame {
             announcementLabel.setHorizontalAlignment(SwingConstants.CENTER);
             g.setColor(new JButton().getBackground());
             g.fillRect(0, 0, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT);
+
 
         }
     }
