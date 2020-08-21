@@ -48,6 +48,7 @@ public class Main implements ActionListener {
 
     private static Main instance = new Main();
 
+
     private Main() {
         board = Board.getInstance();
         mode = DEFAULT_MODE;
@@ -83,9 +84,12 @@ public class Main implements ActionListener {
 
     void update(Game.State gameState) {
 
+        gui.setGameStateString(getGameStateString());
+
         if (gameState == Game.State.WON) {
             if (currentLevel == winLevel) {
                 gui.setGameResultString(LEVELS_FINISHED);
+
             }
             else {
                 gui.setGameResultString(LEVEL_COMPLETED);
@@ -95,10 +99,7 @@ public class Main implements ActionListener {
         else if (gameState == Game.State.LOST) {
             gui.setGameResultString(GAME_LOST);
         }
-        else if (gameState == Game.State.PLAYING){
-            gui.setGameStateString(getGameStateString());
-
-        }
+        //else if (gameState == Game.State.PLAYING){}
 
         gui.repaint(1);
 

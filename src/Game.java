@@ -65,7 +65,7 @@ public class Game implements MouseListener {
 
     }
 
-    public State getState() {
+    State getState() {
         return state;
     }
 

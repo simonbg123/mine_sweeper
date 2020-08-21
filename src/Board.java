@@ -70,6 +70,31 @@ public class Board {
         getBombIndexValues();
     }
 
+    void initializeDebug() {
+
+        int[][] bombs = {{0,1}, {1,2}, {1,7}, {1,8}, {1,10}, {1,13}, {2,8}, {3,7}, {3,13},
+                {5,5}, {6,1}, {6,5}, {6,9}, {7,11}, {7,17}, {8,15}, {9,15}};
+
+        int numBombs = bombs.length;
+        nTilesToUncover = sizeX * sizeY - numBombs;
+
+        for (int row = 0; row < sizeY; ++row ) {
+            for (int col = 0; col < sizeX; ++col) {
+                grid[row][col] = new Cell();
+            }
+        }
+        // place bombs
+        Cell cell;
+        for (int[] bomb : bombs) {
+            cell = grid[bomb[0]][bomb[1]];
+            cell.isBomb = true;
+        }
+
+
+        getBombIndexValues();
+    }
+
+
     private void shuffleBombs() {
         Random random = new Random();
         for (int row = 0; row < sizeY; ++row) {
@@ -146,8 +171,8 @@ public class Board {
         openList.add(new int[]{i, j});
         while (! openList.isEmpty()) {
             // process next node and add neighbours to openList
-            int[] visited = openList.remove();
-            Cell current = grid[visited[0]][visited[1]];
+            int[] visiting = openList.remove();
+            Cell current = grid[visiting[0]][visiting[1]];
             if (current.isVisible) { // verifies that the cell has been visited
                 continue;
             }
@@ -161,8 +186,8 @@ public class Board {
 
             for (int[] delta : deltas) {
 
-                int i_child = visited[0] + delta[0];
-                int j_child = visited[1] + delta[1];
+                int i_child = visiting[0] + delta[0];
+                int j_child = visiting[1] + delta[1];
 
                 if (i_child < 0 || i_child >= sizeY || j_child < 0 || j_child >= sizeX) {
                     continue;
