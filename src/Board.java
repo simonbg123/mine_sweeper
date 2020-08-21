@@ -2,14 +2,14 @@ import java.util.LinkedList;
 import java.util.Random;
 
 /**
- * Represents the game board logical structure
+ * Represents the game board logical structure. It modifies the board state.
  */
-public class Board {
+class Board {
 
     /**
      * n rows, n columns
      */
-    private static Board instance = new Board(Main.DEFAULT_GRID_SIZE_Y, Main.DEFAULT_GRID_SIZE_X);
+    private static Board instance = new Board(Manager.DEFAULT_GRID_SIZE_Y, Manager.DEFAULT_GRID_SIZE_X);
 
     class Cell {
         private int nCloseBombs;
@@ -137,16 +137,16 @@ public class Board {
         }
     }
 
-    public TurnResult flipTile(int i, int j) {
+    public TileRevealResult revealTile(int i, int j) {
 
         Cell cell = grid[i][j];
 
-        if (cell.isVisible) return TurnResult.CONTINUE; // an already discovered tile was selected
+        if (cell.isVisible) return TileRevealResult.CONTINUE; // an already discovered tile was selected
 
         cell.isVisible = true;
 
         if (cell.isBomb) {
-            return TurnResult.LOSS;
+            return TileRevealResult.LOSS;
         }
         else if (cell.nCloseBombs == 0) {
             cell.isVisible = false; // flipNeighbours will switch it back to true
@@ -156,7 +156,7 @@ public class Board {
             --nTilesToUncover;
         }
 
-        return nTilesToUncover == 0 ? TurnResult.WIN : TurnResult.CONTINUE;
+        return nTilesToUncover == 0 ? TileRevealResult.WIN : TileRevealResult.CONTINUE;
     }
 
 

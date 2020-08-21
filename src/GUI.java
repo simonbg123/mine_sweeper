@@ -3,7 +3,9 @@ import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-//todo keep the announcement og game stats intact. Make another one for game result.
+/**
+ * Displays the board, controls, menu and announcements.
+ */
 class GUI extends JFrame {
 
     private static GUI instance = null;
@@ -49,8 +51,8 @@ class GUI extends JFrame {
     private String gameResultString;
     private boolean continueIsVisible = false;
 
-    // the listener for these elements is given in Main in the init() method since
-    // this class is constructed inside Main's constructor
+    // the listener for these elements is given in Manager in the init() method since
+    // this class is constructed inside Manager's constructor
     private JButton continueButton;
     private JButton restartButton;
 
@@ -98,10 +100,10 @@ class GUI extends JFrame {
         ButtonGroup modeButtonGroup = new ButtonGroup();
         singleGameModeOption = new JRadioButtonMenuItem(SINGLE_GAME_OPTION_STRING);
         multilevelModeOption = new JRadioButtonMenuItem(MULTILEVEL_OPTION_STRING);
-        if (Main.DEFAULT_MODE == Main.Mode.MULTILEVEL) {
+        if (Manager.DEFAULT_MODE == Manager.Mode.MULTILEVEL) {
             multilevelModeOption.setSelected(true);
         }
-        else if (Main.DEFAULT_MODE == Main.Mode.SINGLE_GAME) {
+        else if (Manager.DEFAULT_MODE == Manager.Mode.SINGLE_GAME) {
             singleGameModeOption.setSelected(true);
         }
 
@@ -116,13 +118,13 @@ class GUI extends JFrame {
         difficultyMediumOption = new JRadioButtonMenuItem(MEDIUM_OPTION_STRING);
         difficultyHardOption = new JRadioButtonMenuItem(HARD_OPTION_STRING);
 
-        if (Main.DEFAULT_DIFFICULTY == Main.Difficulty.EASY) {
+        if (Manager.DEFAULT_DIFFICULTY == Manager.Difficulty.EASY) {
             difficultyEasyOption.setSelected(true);
         }
-        else if (Main.DEFAULT_DIFFICULTY == Main.Difficulty.MEDIUM) {
+        else if (Manager.DEFAULT_DIFFICULTY == Manager.Difficulty.MEDIUM) {
             difficultyMediumOption.setSelected(true);
         }
-        else if (Main.DEFAULT_DIFFICULTY == Main.Difficulty.HARD) {
+        else if (Manager.DEFAULT_DIFFICULTY == Manager.Difficulty.HARD) {
             difficultyHardOption.setSelected(true);
         }
 
@@ -139,13 +141,13 @@ class GUI extends JFrame {
         mediumGridOption = new JRadioButtonMenuItem(MEDIUM_BOARD_OPTION_STRING);
         largeGridOption = new JRadioButtonMenuItem(LARGE_BOARD_OPTION_STRING);
 
-        if (board.getSizeY() == Main.SMALL_GRID_SIZE_Y) {
+        if (board.getSizeY() == Manager.SMALL_GRID_SIZE_Y) {
             smallGridOption.setSelected(true);
         }
-        else if (board.getSizeY() == Main.MEDIUM_GRID_SIZE_Y) {
+        else if (board.getSizeY() == Manager.MEDIUM_GRID_SIZE_Y) {
             mediumGridOption.setSelected(true);
         }
-        else if (board.getSizeY() == Main.LARGE_GRID_SIZE_Y) {
+        else if (board.getSizeY() == Manager.LARGE_GRID_SIZE_Y) {
             largeGridOption.setSelected(true);
         }
 
@@ -175,15 +177,15 @@ class GUI extends JFrame {
         boardSizeY = board.getSizeY();
 
         switch (boardSizeX) {
-            case Main.SMALL_GRID_SIZE_X:
+            case Manager.SMALL_GRID_SIZE_X:
                 spacing = SMALL_GRID_SPACING;
                 cellSize = SMALL_GRID_CELL_SIZE;
                 break;
-            case Main.MEDIUM_GRID_SIZE_X:
+            case Manager.MEDIUM_GRID_SIZE_X:
                 spacing = MEDIUM_GRID_SPACING;
                 cellSize = MEDIUM_GRID_CELL_SIZE;
                 break;
-            case Main.LARGE_GRID_SIZE_X:
+            case Manager.LARGE_GRID_SIZE_X:
                 spacing = LARGE_GRID_SPACING;
                 cellSize = LARGE_GRID_CELL_SIZE;
                 break;
@@ -288,8 +290,8 @@ class GUI extends JFrame {
             restartButton.setBounds(2, 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3 );
             //restartButton.setDisabledSelectedIcon(restartButton.getDisabledSelectedIcon());
 
-            // the listener for this button is given in Main in the init() method since
-            // this class is constructed inside Main's constructor
+            // the listener for this button is given in Manager in the init() method since
+            // this class is constructed inside Manager's constructor
             continueButton = new JButton("Continue");
             continueButton.setBounds(2, OPTIONS_PANEL_HEIGHT / 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3);
 

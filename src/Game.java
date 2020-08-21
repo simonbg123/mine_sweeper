@@ -1,6 +1,9 @@
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+/**
+ * Manages tile revealing events and state of a particular game
+ */
 public class Game implements MouseListener {
 
     enum State {
@@ -13,7 +16,7 @@ public class Game implements MouseListener {
 
     private Board board;
     private GUI gui;
-    private Main main;
+    private Manager manager;
     private State state;
     private boolean isFirstMove;
 
@@ -32,7 +35,7 @@ public class Game implements MouseListener {
 
     void initialize() {
         gui = GUI.getInstance();
-        main = Main.getInstance();
+        manager = Manager.getInstance();
 
     }
 
@@ -41,29 +44,27 @@ public class Game implements MouseListener {
         isFirstMove = true;
     }
 
-    void playTurn(int x, int y) {
+    void revealTile(int i, int j) {
 
-        if (board.tileIsVisible(y, x)) return; // title was already visible
-
-        TurnResult result = board.flipTile(y, x);
+        TileRevealResult result = board.revealTile(i, j);
 
         if (isFirstMove) { // guarantees a first good move
-            while (result == TurnResult.LOSS) {
-                board.initialize(main.getnBombs());
-                result = board.flipTile(y, x);
+            while (result == TileRevealResult.LOSS) {
+                board.initialize(manager.getnBombs());
+                result = board.revealTile(i, j);
             }
             isFirstMove = false;
         }
 
 
-        if (result == TurnResult.WIN) {
+        if (result == TileRevealResult.WIN) {
             state = State.WON;
         }
-        else if (result == TurnResult.LOSS) {
+        else if (result == TileRevealResult.LOSS) {
             state = State.LOST;
         }
 
-        main.update(state);
+        manager.update(state);
 
     }
 
@@ -82,7 +83,10 @@ public class Game implements MouseListener {
 
         int i = gui.getIfromY(e.getY());
         int j = gui.getJfromX(e.getX());
-        playTurn(j, i);
+
+        if (board.tileIsVisible(i, j)) return; // title was already visible
+
+        revealTile(i, j);
     }
 
     @Override
