@@ -140,13 +140,15 @@ public class Board {
     public TurnResult flipTile(int i, int j) {
 
         Cell cell = grid[i][j];
+
+        if (cell.isVisible) return TurnResult.CONTINUE; // an already discovered tile was selected
+
         cell.isVisible = true;
 
         if (cell.isBomb) {
             return TurnResult.LOSS;
         }
-
-        if (cell.nCloseBombs == 0) {
+        else if (cell.nCloseBombs == 0) {
             cell.isVisible = false; // flipNeighbours will switch it back to true
             flipNeighbours(i, j);
         }

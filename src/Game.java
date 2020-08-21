@@ -43,6 +43,8 @@ public class Game implements MouseListener {
 
     void playTurn(int x, int y) {
 
+        if (board.tileIsVisible(y, x)) return; // title was already visible
+
         TurnResult result = board.flipTile(y, x);
 
         if (isFirstMove) { // guarantees a first good move
