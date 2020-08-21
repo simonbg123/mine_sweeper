@@ -47,7 +47,7 @@ public class Main implements ActionListener {
     private Board board;
 
     private static Main instance = new Main();
-    
+
     private Main() {
         board = Board.getInstance();
         mode = DEFAULT_MODE;
@@ -105,8 +105,8 @@ public class Main implements ActionListener {
     }
 
     private String getLevelAnnouncement() {
-        return  "<html>LEVEL " + currentLevel + "/" + winLevel + "<br>" +
-                "BOMBS      : " + nBombs + "<br>" +
+        return  "<html>LEVEL &nbsp;&nbsp&nbsp;&nbsp&nbsp;: " + currentLevel + "/" + winLevel + "<br>" +
+                "BOMBS &nbsp;&nbsp&nbsp;&nbsp&nbsp;: " + nBombs + "<br>" +
                 "TILES LEFT : " + board.nTilesToUncover() + "</html>";
     }
 
@@ -162,7 +162,7 @@ public class Main implements ActionListener {
             ++currentLevel;
             board.initialize(nBombs);
             gui.setAnnouncementString(getLevelAnnouncement());
-            game.setState(Game.State.PLAYING);
+            game.reset();
 
             gui.repaint();
         }
@@ -247,6 +247,9 @@ public class Main implements ActionListener {
         restartGame();
     }
 
+    public int getnBombs() {
+        return nBombs;
+    }
 
     public static void main(String[] args) {
 

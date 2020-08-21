@@ -15,10 +15,12 @@ public class Game implements MouseListener {
     private GUI gui;
     private Main main;
     private State state;
+    private boolean isFirstMove;
 
     private Game() {
         board = Board.getInstance();
         state = State.PLAYING;
+        isFirstMove = true;
     }
 
     public static Game getInstance() {
@@ -36,11 +38,21 @@ public class Game implements MouseListener {
 
     void reset() {
         state = State.PLAYING;
+        isFirstMove = true;
     }
 
     void playTurn(int x, int y) {
 
         TurnResult result = board.flipTile(y, x);
+
+        if (isFirstMove) { // guarantees a first good move
+            while (result == TurnResult.LOSS) {
+                board.initialize(main.getnBombs());
+                result = board.flipTile(y, x);
+            }
+            isFirstMove = false;
+        }
+
 
         if (result == TurnResult.WIN) {
             state = State.WON;

@@ -306,17 +306,24 @@ class GUI extends JFrame {
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
             announcementLabel = new JLabel();
-            announcementLabel.setFont(new Font("Monospace", Font.BOLD, 20));
+            announcementLabel.setFont(new Font("Monospaced", Font.BOLD, 20));
             announcementLabel.setForeground(Color.BLUE);
-            add(announcementLabel, BorderLayout.CENTER);
+            announcementLabel.setVerticalAlignment(SwingConstants.CENTER);
+            add(announcementLabel);
         }
 
         public void paintComponent(Graphics g) {
 
             announcementLabel.setText(announcementString);
-            announcementLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            announcementLabel.setBounds(335, 0, 500, ANNOUNCEMENT_PANEL_HEIGHT);
+
             g.setColor(new JButton().getBackground());
             g.fillRect(0, 0, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT);
+            g.setColor(Color.BLUE);
+            g.fillRect(6, 6, ANNOUNCEMENT_PANEL_WIDTH - 12, ANNOUNCEMENT_PANEL_HEIGHT - 12);
+            g.setColor(new JButton().getBackground());
+            g.fillRect(7, 7, ANNOUNCEMENT_PANEL_WIDTH - 14, ANNOUNCEMENT_PANEL_HEIGHT - 14);
+
 
 
         }
