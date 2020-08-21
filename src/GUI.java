@@ -24,16 +24,16 @@ class GUI extends JFrame {
     private static final int ANNOUNCEMENT_PANEL_WIDTH = PANEL_WIDTH - OPTIONS_PANEL_WIDTH - 25;
     private static final int ANNOUNCEMENT_PANEL_HEIGHT = 128;
 
-    static final String CONTINUE_BUTTON__STRING = "Continue";
-    static final String RESTART_BUTTON__STRING = "Restart";
+    static final String CONTINUE_BUTTON_STRING = "Continue";
+    static final String RESTART_BUTTON_STRING = "Restart";
     static final String SINGLE_GAME_OPTION_STRING = "Single-Game";
     static final String MULTILEVEL_OPTION_STRING = "Multilevel";
     static final String EASY_OPTION_STRING = "Easy";
     static final String MEDIUM_OPTION_STRING = "Medium";
     static final String HARD_OPTION_STRING = "Hard";
-    static final String SMALL_GRID_OPTION_STRING = "Small";
-    static final String MEDIUM_GRID_OPTION_STRING = "Medium";
-    static final String LARGE_GRID_OPTION_STRING = "Large";
+    static final String SMALL_BOARD_OPTION_STRING = "Small Board";
+    static final String MEDIUM_BOARD_OPTION_STRING = "Medium Board";
+    static final String LARGE_BOARD_OPTION_STRING = "Large Board";
 
     private int spacing;
     private int boardSizeX;
@@ -81,7 +81,7 @@ class GUI extends JFrame {
         init();
 
 
-        OptionsPanel optionsPanel = new OptionsPanel();
+        OptionsPanel optionsPanel = new OptionsPanel(new BorderLayout());
         optionsPanel.setBounds(5, 5, OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT);
         add(optionsPanel);
 
@@ -215,7 +215,7 @@ class GUI extends JFrame {
         private ButtonGroup difficultyButtonGroup;
         private ButtonGroup boardSizeButtonGroup;
 
-        public OptionsPanel() {
+        public OptionsPanel(LayoutManager layout) {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
@@ -239,9 +239,9 @@ class GUI extends JFrame {
 
             boardSizeMenu = new JMenu("Board Size");
             boardSizeButtonGroup = new ButtonGroup();
-            smallGridOption = new JRadioButtonMenuItem(SMALL_GRID_OPTION_STRING);
-            mediumGridOption = new JRadioButtonMenuItem(MEDIUM_GRID_OPTION_STRING);
-            largeGridOption = new JRadioButtonMenuItem(LARGE_GRID_OPTION_STRING);
+            smallGridOption = new JRadioButtonMenuItem(SMALL_BOARD_OPTION_STRING);
+            mediumGridOption = new JRadioButtonMenuItem(MEDIUM_BOARD_OPTION_STRING);
+            largeGridOption = new JRadioButtonMenuItem(LARGE_BOARD_OPTION_STRING);
             boardSizeButtonGroup.add(smallGridOption);
             boardSizeButtonGroup.add(mediumGridOption);
             boardSizeButtonGroup.add(largeGridOption);
@@ -258,7 +258,7 @@ class GUI extends JFrame {
             restartButton.setSize(OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT / 3);
 
             setJMenuBar(menuBar);
-            add(restartButton);
+            add(restartButton, BorderLayout.CENTER);
 
         }
 
@@ -299,7 +299,7 @@ class GUI extends JFrame {
             announcementLabel.setText(announcementString);
             announcementLabel.setHorizontalAlignment(SwingConstants.CENTER);
             continueButton.setVisible(continueIsVisible);
-            g.setColor(Color.WHITE);
+            g.setColor(new JButton().getBackground());
             g.fillRect(0, 0, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT);
 
         }
@@ -339,72 +339,32 @@ class GUI extends JFrame {
         restartButton.addActionListener(l);
     }
 
-    public JButton getContinueButton() {
-        return continueButton;
-    }
-
-    public JButton getRestartButton() {
-        return restartButton;
-    }
-
-    public JRadioButtonMenuItem getSingleGameModeOption() {
-        return singleGameModeOption;
-    }
-
     void setSingleGameModeListener(ActionListener l) {
         singleGameModeOption.addActionListener(l);
-    }
-
-    public JRadioButtonMenuItem getMultilevelModeOption() {
-        return multilevelModeOption;
     }
 
     void setMultilevelModeListener(ActionListener l) {
         multilevelModeOption.addActionListener(l);
     }
 
-    public JRadioButtonMenuItem getDifficultyEasyOption() {
-        return difficultyEasyOption;
-    }
-
     void setEasyDifficultyListener(ActionListener l) {
         difficultyEasyOption.addActionListener(l);
-    }
-
-    public JRadioButtonMenuItem getDifficultyMediumOption() {
-        return difficultyMediumOption;
     }
 
     void setMediumDifficultyListener(ActionListener l) {
         difficultyMediumOption.addActionListener(l);
     }
 
-    public JRadioButtonMenuItem getDifficultyHardOption() {
-        return difficultyHardOption;
-    }
-
     void setHardDifficultyListener(ActionListener l) {
         difficultyHardOption.addActionListener(l);
-    }
-
-    public JRadioButtonMenuItem getSmallGridOption() {
-        return smallGridOption;
     }
 
     void setSmallGridListener(ActionListener l) {
         smallGridOption.addActionListener(l);
     }
 
-    public JRadioButtonMenuItem getMediumGridOption() {
-        return mediumGridOption;
-    }
-
     void setMediumGridListener(ActionListener l) {
         mediumGridOption.addActionListener(l);
-    }
-
-    public JRadioButtonMenuItem getLargeGridOption() {
-        return largeGridOption;
     }
 
     void setLargeGridListener(ActionListener l) {

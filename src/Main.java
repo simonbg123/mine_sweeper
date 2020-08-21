@@ -1,9 +1,12 @@
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-//todo make this configurable: one game, or increasing levels
-// change size of board
-// difficulty (for one game = number of bombs; for increasing levels, starting number of bombs + increment)
+//todo get rid of options panel. make the restart button a WEST component
+// of the top announcement panel.
+// rename announcement panel as top panel.
+// move menu stuff into the JFrame constructor
+
 public class Main implements ActionListener {
 
     enum Mode {
@@ -26,9 +29,12 @@ public class Main implements ActionListener {
     public static final int LARGE_GRID_SIZE_X = 36;
     private static final int WIN_LEVEL = 8;
 
-    private static String LEVEL_COMPLETED = "Level completed!";
-    private static String LEVELS_FINISHED = "Congratulations, you have won!!!";
-    private static String GAME_LOST = "You have lost. Try again!";
+    private static final String LEVEL_COMPLETED = "LEVEL COMPLETED!";
+    private static final String LEVELS_FINISHED = "CONGRATULATIONS, YOU HAVE WON!!!";
+    private static final String GAME_LOST = "YOU HAVE LOST. TRY AGAIN!";
+
+    private static final String BOARD_SIZE_CHANGE_WARNING = "This change will cause a new game to be started. Would you like to proceed?";
+    private static final String BOARD_SIZE_CHANGE_WARNING_TITLE = "Board Size Change";
 
     private Mode mode;
     private Difficulty difficulty;
@@ -145,9 +151,9 @@ public class Main implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        Object o = e.getSource();
+        String actionCommand = e.getActionCommand();
 
-        if (o == gui.getContinueButton()) {
+        if (actionCommand.equals(GUI.CONTINUE_BUTTON_STRING)) {
 
             gui.setContinueIsVisible(false);
 
@@ -159,46 +165,33 @@ public class Main implements ActionListener {
 
             gui.repaint();
         }
-        else if (o == gui.getRestartButton()) {
+        else if (actionCommand.equals(GUI.RESTART_BUTTON_STRING)) {
 
             restartGame();
         }
-        else if (o == gui.getSingleGameModeOption()) {
+        else if (actionCommand.equals(GUI.SINGLE_GAME_OPTION_STRING)) {
             mode = Mode.SINGLE_GAME;
         }
-        else if (o == gui.getMultilevelModeOption()) {
+        else if (actionCommand.equals(GUI.MULTILEVEL_OPTION_STRING)) {
             mode = Mode.MULTILEVEL;
         }
-        else if (o == gui.getDifficultyEasyOption()) {
+        else if (actionCommand.equals(GUI.EASY_OPTION_STRING)) {
             difficulty = Difficulty.EASY;
         }
-        else if (o == gui.getDifficultyMediumOption()) {
+        else if (actionCommand.equals(GUI.MEDIUM_OPTION_STRING)) {
             difficulty = Difficulty.MEDIUM;
         }
-        else if (o == gui.getDifficultyHardOption()) {
+        else if (actionCommand.equals(GUI.HARD_OPTION_STRING)) {
             difficulty = Difficulty.HARD;
         }
-        else if (o == gui.getSmallGridOption()) {
-            board.setSizeX(SMALL_GRID_SIZE_X);
-            board.setSizeY(SMALL_GRID_SIZE_Y);
-            board.setGrid();
-            gui.init();
-            restartGame();
+        else if (actionCommand.equals(GUI.SMALL_BOARD_OPTION_STRING)) {
+            processBoardSizeChangeRequest(actionCommand);
         }
-        else if (o == gui.getMediumGridOption()) {
-            board.setSizeX(MEDIUM_GRID_SIZE_X);
-            board.setSizeY(MEDIUM_GRID_SIZE_Y);
-            board.setGrid();
-            gui.init();
-            restartGame();
+        else if (actionCommand.equals(GUI.MEDIUM_BOARD_OPTION_STRING)) {
+            processBoardSizeChangeRequest(actionCommand);
         }
-        else if (o == gui.getLargeGridOption()) {
-            board.setSizeX(LARGE_GRID_SIZE_X);
-            board.setSizeY(LARGE_GRID_SIZE_Y);
-            board.setGrid();
-            gui.init();
-            restartGame();
-
+        else if (actionCommand.equals(GUI.LARGE_BOARD_OPTION_STRING)) {
+            processBoardSizeChangeRequest(actionCommand);
         }
     }
 
@@ -213,6 +206,41 @@ public class Main implements ActionListener {
 
         gui.repaint();
 
+    }
+
+    private void processBoardSizeChangeRequest(String change) {
+        int answer = JOptionPane.showOptionDialog(
+                gui,
+                BOARD_SIZE_CHANGE_WARNING,
+                BOARD_SIZE_CHANGE_WARNING_TITLE,
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                null,
+                JOptionPane.YES_OPTION
+        );
+        if (answer != JOptionPane.OK_OPTION) return;
+
+        int sizeX = 0, sizeY = 0;
+        switch (change) {
+            case GUI.SMALL_BOARD_OPTION_STRING:
+                sizeX = SMALL_GRID_SIZE_X;
+                sizeY = SMALL_GRID_SIZE_Y;
+                break;
+            case GUI.MEDIUM_BOARD_OPTION_STRING:
+                sizeX = MEDIUM_GRID_SIZE_X;
+                sizeY = MEDIUM_GRID_SIZE_Y;
+                break;
+            case GUI.LARGE_BOARD_OPTION_STRING:
+                sizeX = LARGE_GRID_SIZE_X;
+                sizeY = LARGE_GRID_SIZE_Y;
+        }
+
+        board.setSizeX(sizeX);
+        board.setSizeY(sizeY);
+        board.setGrid();
+        gui.init();
+        restartGame();
     }
 
 
