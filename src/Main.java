@@ -57,7 +57,7 @@ public class Main implements ActionListener {
         bombIncrement = setBombIncrement();
         currentLevel = 1;
         board.initialize(nBombs);
-        gui = GUI.getInstance(getLevelAnnouncement());
+        gui = GUI.getInstance(getGameStateString());
         game = Game.getInstance();
     }
 
@@ -85,18 +85,18 @@ public class Main implements ActionListener {
 
         if (gameState == Game.State.WON) {
             if (currentLevel == winLevel) {
-                gui.setAnnouncementString(LEVELS_FINISHED);
+                gui.setGameResultString(LEVELS_FINISHED);
             }
             else {
-                gui.setAnnouncementString(LEVEL_COMPLETED);
+                gui.setGameResultString(LEVEL_COMPLETED);
                 gui.setContinueIsVisible(true);
             }
         }
         else if (gameState == Game.State.LOST) {
-            gui.setAnnouncementString(GAME_LOST);
+            gui.setGameResultString(GAME_LOST);
         }
         else if (gameState == Game.State.PLAYING){
-            gui.setAnnouncementString(getLevelAnnouncement());
+            gui.setGameStateString(getGameStateString());
 
         }
 
@@ -104,7 +104,7 @@ public class Main implements ActionListener {
 
     }
 
-    private String getLevelAnnouncement() {
+    private String getGameStateString() {
         return  "<html>LEVEL &nbsp;&nbsp&nbsp;&nbsp&nbsp;: " + currentLevel + "/" + winLevel + "<br>" +
                 "BOMBS &nbsp;&nbsp&nbsp;&nbsp&nbsp;: " + nBombs + "<br>" +
                 "TILES LEFT : " + board.nTilesToUncover() + "</html>";
@@ -161,13 +161,13 @@ public class Main implements ActionListener {
             nBombs += bombIncrement;
             ++currentLevel;
             board.initialize(nBombs);
-            gui.setAnnouncementString(getLevelAnnouncement());
+            gui.setGameStateString(getGameStateString());
             game.reset();
+            gui.setGameResultString("");
 
             gui.repaint();
         }
         else if (actionCommand.equals(GUI.RESTART_BUTTON_STRING)) {
-
             restartGame();
         }
         else if (actionCommand.equals(GUI.SINGLE_GAME_OPTION_STRING)) {
@@ -205,7 +205,8 @@ public class Main implements ActionListener {
         winLevel = setWinLevel();
         currentLevel = 1;
         board.initialize(nBombs);
-        gui.setAnnouncementString(getLevelAnnouncement());
+        gui.setGameStateString(getGameStateString());
+        gui.setGameResultString("");
         game.reset();
 
         gui.repaint();

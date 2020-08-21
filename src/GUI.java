@@ -3,7 +3,7 @@ import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-
+//todo keep the announcement og game stats intact. Make another one for game result.
 class GUI extends JFrame {
 
     private static GUI instance = null;
@@ -45,7 +45,8 @@ class GUI extends JFrame {
     private Board board; // logical board
     private Game game;
 
-    private String announcementString;
+    private String gameStateString;
+    private String gameResultString;
     private boolean continueIsVisible = false;
 
     // the listener for these elements is given in Main in the init() method since
@@ -66,12 +67,13 @@ class GUI extends JFrame {
 
 
 
-    private GUI(String announcementStr) {
+    private GUI(String gameStateString) {
 
 
         setLayout(null);
 
-        this.announcementString = announcementStr;
+        this.gameStateString = gameStateString;
+        gameResultString = "";
 
         board = Board.getInstance();
         game = Game.getInstance();
@@ -91,7 +93,9 @@ class GUI extends JFrame {
         announcementPanel.setBounds(5 + OPTIONS_PANEL_WIDTH + 5, 5, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT );
         add(announcementPanel);
 
+
         JMenu modeMenu = new JMenu("Mode");
+        ButtonGroup modeButtonGroup = new ButtonGroup();
         singleGameModeOption = new JRadioButtonMenuItem(SINGLE_GAME_OPTION_STRING);
         multilevelModeOption = new JRadioButtonMenuItem(MULTILEVEL_OPTION_STRING);
         if (Main.DEFAULT_MODE == Main.Mode.MULTILEVEL) {
@@ -100,6 +104,9 @@ class GUI extends JFrame {
         else if (Main.DEFAULT_MODE == Main.Mode.SINGLE_GAME) {
             singleGameModeOption.setSelected(true);
         }
+
+        modeButtonGroup.add(singleGameModeOption);
+        modeButtonGroup.add(multilevelModeOption);
         modeMenu.add(singleGameModeOption);
         modeMenu.add(multilevelModeOption);
 
@@ -299,23 +306,34 @@ class GUI extends JFrame {
 
     class AnnouncementPanel extends JPanel {
 
-        JLabel announcementLabel;
+        JLabel gameStateLabel;
+        JLabel gameResultLabel;
 
         AnnouncementPanel(LayoutManager layout) {
             super(layout);
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
-            announcementLabel = new JLabel();
-            announcementLabel.setFont(new Font("Monospaced", Font.BOLD, 20));
-            announcementLabel.setForeground(Color.BLUE);
-            announcementLabel.setVerticalAlignment(SwingConstants.CENTER);
-            add(announcementLabel);
+            gameStateLabel = new JLabel();
+            gameStateLabel.setFont(new Font("Monospaced", Font.BOLD, 20));
+            gameStateLabel.setForeground(Color.BLUE);
+            gameStateLabel.setVerticalAlignment(SwingConstants.CENTER);
+            add(gameStateLabel);
+
+            gameResultLabel = new JLabel();
+            gameResultLabel.setFont(new Font("Monospaced", Font.BOLD, 30));
+            gameResultLabel.setForeground(Color.BLUE);
+            gameResultLabel.setVerticalAlignment(SwingConstants.CENTER);
+            add(gameResultLabel);
+
         }
 
         public void paintComponent(Graphics g) {
 
-            announcementLabel.setText(announcementString);
-            announcementLabel.setBounds(335, 0, 500, ANNOUNCEMENT_PANEL_HEIGHT);
+            gameStateLabel.setText(gameStateString);
+            gameStateLabel.setBounds(35, 0, 200, ANNOUNCEMENT_PANEL_HEIGHT);
+
+            gameResultLabel.setText(gameResultString);
+            gameResultLabel.setBounds(280, 0, ANNOUNCEMENT_PANEL_WIDTH - 330, ANNOUNCEMENT_PANEL_HEIGHT);
 
             g.setColor(new JButton().getBackground());
             g.fillRect(0, 0, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT);
@@ -347,9 +365,9 @@ class GUI extends JFrame {
         return (y - 3 * spacing) / cellSize;
     }
 
-    void setAnnouncementString(String str) {
-        this.announcementString = str;
-    }
+    void setGameStateString(String str) { this.gameStateString = str; }
+
+    void setGameResultString(String str) { this.gameResultString = str; }
 
     void setContinueIsVisible(boolean continueIsVisible) {
         this.continueIsVisible = continueIsVisible;
