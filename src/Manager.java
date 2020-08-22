@@ -26,7 +26,7 @@ public class Manager implements ActionListener {
     static final int MEDIUM_GRID_SIZE_X = 25;
     static final int LARGE_GRID_SIZE_Y = 20;
     static final int LARGE_GRID_SIZE_X = 36;
-    private static final int WIN_LEVEL = 8;
+    private static final int WIN_LEVEL = 5;
 
     static final Difficulty DEFAULT_DIFFICULTY = Difficulty.EASY;
     static final Mode DEFAULT_MODE = Mode.MULTILEVEL;
@@ -123,16 +123,16 @@ public class Manager implements ActionListener {
                     nBombs = 3 * sizeX * sizeY / 100;
                     break;
                 case MEDIUM:
-                    nBombs = 7 * sizeX * sizeY / 100;
+                    nBombs = 8 * sizeX * sizeY / 100;
                     break;
                 case HARD:
-                    nBombs = 11 * sizeX * sizeY / 100;
+                    nBombs = 13 * sizeX * sizeY / 100;
             }
         }
         else if (mode == Mode.SINGLE_GAME) {
             switch (difficulty) {
                 case EASY:
-                    nBombs = 4 * sizeX * sizeY / 100;
+                    nBombs = 6 * sizeX * sizeY / 100;
                     break;
                 case MEDIUM:
                     nBombs = 11 * sizeX * sizeY / 100;
