@@ -170,7 +170,7 @@ public class Manager implements ActionListener {
 
             gui.repaint();
         }
-        else if (actionCommand.equals(GUI.RESTART_BUTTON_STRING)) {
+        else if (actionCommand.equals(GUI.NEWGAME_BUTTON_STRING)) {
             restartGame();
         }
         else if (actionCommand.equals(GUI.SINGLE_GAME_OPTION_STRING)) {
@@ -203,6 +203,8 @@ public class Manager implements ActionListener {
     }
 
     private void restartGame() {
+        gui.setContinueIsVisible(false);
+        
         nBombs = setInitialnBombs();
         bombIncrement = setBombIncrement();
         winLevel = setWinLevel();

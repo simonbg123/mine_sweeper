@@ -27,7 +27,7 @@ class GUI extends JFrame {
     private static final int ANNOUNCEMENT_PANEL_HEIGHT = 128;
 
     static final String CONTINUE_BUTTON_STRING = "Continue";
-    static final String RESTART_BUTTON_STRING = "Restart";
+    static final String NEWGAME_BUTTON_STRING = "New Game";
     static final String SINGLE_GAME_OPTION_STRING = "Single-Game";
     static final String MULTILEVEL_OPTION_STRING = "Multilevel";
     static final String EASY_OPTION_STRING = "Easy";
@@ -286,7 +286,7 @@ class GUI extends JFrame {
             setLayout(null);
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
-            restartButton = new JButton("Restart");
+            restartButton = new JButton(NEWGAME_BUTTON_STRING);
             restartButton.setBounds(2, 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3 );
             //restartButton.setDisabledSelectedIcon(restartButton.getDisabledSelectedIcon());
 
