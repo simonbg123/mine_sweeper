@@ -123,10 +123,10 @@ public class Manager implements ActionListener {
                     nBombs = 3 * sizeX * sizeY / 100;
                     break;
                 case MEDIUM:
-                    nBombs = 9 * sizeX * sizeY / 100;
+                    nBombs = 7 * sizeX * sizeY / 100;
                     break;
                 case HARD:
-                    nBombs = 15 * sizeX * sizeY / 100;
+                    nBombs = 11 * sizeX * sizeY / 100;
             }
         }
         else if (mode == Mode.SINGLE_GAME) {
@@ -135,17 +135,17 @@ public class Manager implements ActionListener {
                     nBombs = 4 * sizeX * sizeY / 100;
                     break;
                 case MEDIUM:
-                    nBombs = 14 * sizeX * sizeY / 100;
+                    nBombs = 11 * sizeX * sizeY / 100;
                     break;
                 case HARD:
-                    nBombs = 24 * sizeX * sizeY / 100;
+                    nBombs = 15 * sizeX * sizeY / 100;
             }
         }
         return nBombs;
     }
 
     private int setBombIncrement() {
-        return 10 * board.getSizeX() * board.getSizeY() / 100 / winLevel;
+        return 8 * board.getSizeX() * board.getSizeY() / 100 / winLevel;
     }
 
     private int setWinLevel() {
