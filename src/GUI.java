@@ -54,7 +54,7 @@ class GUI extends JFrame {
     // the listener for these elements is given in Manager in the init() method since
     // this class is constructed inside Manager's constructor
     private JButton continueButton;
-    private JButton restartButton;
+    private JButton newGameButton;
 
     private JRadioButtonMenuItem singleGameModeOption;
     private JRadioButtonMenuItem multilevelModeOption;
@@ -356,16 +356,16 @@ class GUI extends JFrame {
             setLayout(null);
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
-            restartButton = new JButton(NEWGAME_BUTTON_STRING);
-            restartButton.setBounds(2, 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3 );
-            //restartButton.setDisabledSelectedIcon(restartButton.getDisabledSelectedIcon());
+            newGameButton = new JButton(NEWGAME_BUTTON_STRING);
+            newGameButton.setBounds(2, 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3 );
+            //newGameButton.setDisabledSelectedIcon(newGameButton.getDisabledSelectedIcon());
 
             // the listener for this button is given in Manager in the init() method since
             // this class is constructed inside Manager's constructor
-            continueButton = new JButton("Continue");
+            continueButton = new JButton(CONTINUE_BUTTON_STRING);
             continueButton.setBounds(2, OPTIONS_PANEL_HEIGHT / 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3);
 
-            add(restartButton);
+            add(newGameButton);
             add(continueButton);
 
 
@@ -387,13 +387,13 @@ class GUI extends JFrame {
 
             gameStateLabel = new JLabel();
             gameStateLabel.setFont(new Font("Monospaced", Font.BOLD, 23));
-            gameStateLabel.setForeground(Color.BLUE);
+            gameStateLabel.setForeground(Color.BLACK);
             gameStateLabel.setVerticalAlignment(SwingConstants.CENTER);
             add(gameStateLabel);
 
             gameResultLabel = new JLabel();
             gameResultLabel.setFont(new Font("Monospaced", Font.BOLD, 30));
-            gameResultLabel.setForeground(Color.BLUE);
+            gameResultLabel.setForeground(Color.BLACK);
             gameResultLabel.setVerticalAlignment(SwingConstants.CENTER);
             add(gameResultLabel);
 
@@ -449,8 +449,8 @@ class GUI extends JFrame {
         continueButton.addActionListener(l);
     }
 
-    void setRestartButtonListener(ActionListener l) {
-        restartButton.addActionListener(l);
+    void setNewGameButtonListener(ActionListener l) {
+        newGameButton.addActionListener(l);
     }
 
     void setSingleGameModeListener(ActionListener l) {

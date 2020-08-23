@@ -28,14 +28,14 @@ public class Manager implements ActionListener {
     static final int LARGE_GRID_SIZE_X = 36;
     private static final int WIN_LEVEL = 5;
 
-    static final Difficulty DEFAULT_DIFFICULTY = Difficulty.EASY;
+    static final Difficulty DEFAULT_DIFFICULTY = Difficulty.MEDIUM;
     static final Mode DEFAULT_MODE = Mode.MULTILEVEL;
     static final int DEFAULT_GRID_SIZE_Y = MEDIUM_GRID_SIZE_Y;
     static final int DEFAULT_GRID_SIZE_X = MEDIUM_GRID_SIZE_X;
 
     private static final String LEVEL_COMPLETED = "LEVEL COMPLETED!";
-    private static final String LEVELS_FINISHED = "CONGRATULATIONS, YOU HAVE WON!!!";
-    private static final String GAME_LOST = "YOU HAVE LOST. TRY AGAIN!";
+    private static final String LEVELS_FINISHED = "CONGRATULATIONS, YOU WIN!!!";
+    private static final String GAME_LOST = "BOOM! GAME OVER. TRY AGAIN!";
 
     private static final String BOARD_SIZE_CHANGE_WARNING = "This change will cause a new game to be started. Would you like to proceed?";
     private static final String BOARD_SIZE_CHANGE_WARNING_TITLE = "Board Size Change";
@@ -73,7 +73,7 @@ public class Manager implements ActionListener {
     void init() { // Manager has to be fully constructed for the below operations to take place
         Game.getInstance().initialize();
         gui.setContinueButtonListener(this);
-        gui.setRestartButtonListener(this);
+        gui.setNewGameButtonListener(this);
         gui.setSingleGameModeListener(this);
         gui.setMultilevelModeListener(this);
         gui.setEasyDifficultyListener(this);
@@ -171,7 +171,7 @@ public class Manager implements ActionListener {
             gui.repaint();
         }
         else if (actionCommand.equals(GUI.NEWGAME_BUTTON_STRING)) {
-            restartGame();
+            startNewGame();
         }
         else if (actionCommand.equals(GUI.SINGLE_GAME_OPTION_STRING)) {
             mode = Mode.SINGLE_GAME;
@@ -202,7 +202,7 @@ public class Manager implements ActionListener {
         }
     }
 
-    private void restartGame() {
+    private void startNewGame() {
         gui.setContinueIsVisible(false);
 
         nBombs = setInitialnBombs();
@@ -250,7 +250,7 @@ public class Manager implements ActionListener {
         board.setSizeY(sizeY);
         board.setGrid();
         gui.init();
-        restartGame();
+        startNewGame();
     }
 
     int getnBombs() {
