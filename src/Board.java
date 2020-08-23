@@ -72,7 +72,7 @@ class Board {
         placeBombs(numBombs);
 
     }
-    
+
     private void placeBombs(int bombsToPlace) {
 
         Random random = new Random();

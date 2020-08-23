@@ -233,36 +233,65 @@ class GUI extends JFrame {
             int startY = 3 * spacing;
 
             // i's correspond to Y coordinates
+            boolean raised;
             for (int i = 0; i < boardSizeY; ++i) {
                 for (int j = 0; j < boardSizeX; ++j) {
 
+                    raised = false;
                     Board.Cell cell = grid[i][j];
                     String str = "";
                     Game.State gameState = game.getState();
 
-                    if (!cell.isVisible() && gameState != Game.State.WON) {
-                        g.setColor(Color.gray);
-                    }
-                    else if (cell.isBomb()) {
-                        if (gameState == Game.State.WON) {
-                            g.setColor(Color.green);
+                    if (cell.isVisible()) {
+                        if (cell.isBomb()) {
+                            if (gameState == Game.State.WON) {
+                                g.setColor(Color.green);
+                            }
+                            else { g.setColor(Color.red); }
+
+                            str = "(( ! ))";
                         }
-                        else { g.setColor(Color.red); }
-                        str = "(( ! ))";
+                        else if (cell.getnCloseBombs() > 0) {
+                            g.setColor(Color.yellow);
+                            str = Integer.toString(cell.getnCloseBombs());
+                        }
+                        else {
+                            g.setColor(Color.lightGray);
+                        }
                     }
-                    else if (cell.getnCloseBombs() > 0) {
-                        g.setColor(Color.yellow);
-                        str = Integer.toString(cell.getnCloseBombs());
+                    else { //if (!cell.isVisible() {
+                        if (cell.isBomb() && gameState != Game.State.PLAYING) {
+                            if (gameState == Game.State.WON) {
+                                g.setColor(Color.green);
+                            }
+                            else if (gameState == Game.State.LOST) {
+                                g.setColor(Color.orange);
+                            }
+                            str = "(( ! ))";
+                        }
+                        else {
+                            g.setColor(Color.gray);
+                            raised = true;
+                        }
+                    }
+
+                    if (raised) {
+                        g.fill3DRect(
+                                startX + spacing + j * cellSize,
+                                startY + spacing + i * cellSize,
+                                cellSize - 2 * spacing,
+                                cellSize - 2 * spacing,
+                                true
+                        );
                     }
                     else {
-                        g.setColor(Color.lightGray);
+                        g.fillRect(
+                                startX + spacing + j * cellSize,
+                                startY + spacing + i * cellSize,
+                                cellSize - 2 * spacing,
+                                cellSize - 2 * spacing
+                        );
                     }
-                    g.fillRect(
-                            startX + spacing + j * cellSize,
-                            startY + spacing + i * cellSize,
-                            cellSize - 2 * spacing,
-                            cellSize - 2 * spacing
-                    );
                     if (!str.isBlank()) {
                         g.setColor(Color.BLACK);
                         g.setFont(new Font("Monospace", Font.BOLD, cellSize*4/ (cell.isBomb()? 15: 9) ));
