@@ -11,6 +11,15 @@ class Board {
      */
     private static Board instance = new Board(Manager.DEFAULT_GRID_SIZE_Y, Manager.DEFAULT_GRID_SIZE_X);
 
+    /**
+     * used for incrementing neighbour bomb index values
+     */
+    private static int[][] deltas = {
+            {-1, -1}, {-1, 0}, {-1, 1},
+            { 0, -1},          { 0, 1},
+            { 1, -1}, { 1, 0}, { 1, 1}
+    };
+
     class Cell {
         private int nCloseBombs;
         private boolean isBomb;
@@ -53,91 +62,51 @@ class Board {
     void initialize(int numBombs) {
 
         nTilesToUncover = sizeX * sizeY - numBombs;
-        // create cells and bombs
-        int bombsToPlace = numBombs;
-        for (int row = 0; row < sizeY; ++row ) {
-            for (int col = 0; col < sizeX; ++col) {
-                grid[row][col] = new Cell();
-                if (bombsToPlace > 0) {
-                    grid[row][col].isBomb = true;
-                    --bombsToPlace;
-                }
-            }
-        }
-
-        shuffleBombs();
-
-        getBombIndexValues();
-    }
-
-    void initializeDebug() {
-
-        int[][] bombs = {{0,1}, {1,2}, {1,7}, {1,8}, {1,10}, {1,13}, {2,8}, {3,7}, {3,13},
-                {5,5}, {6,1}, {6,5}, {6,9}, {7,11}, {7,17}, {8,15}, {9,15}};
-
-        int numBombs = bombs.length;
-        nTilesToUncover = sizeX * sizeY - numBombs;
-
+        // create cells
         for (int row = 0; row < sizeY; ++row ) {
             for (int col = 0; col < sizeX; ++col) {
                 grid[row][col] = new Cell();
             }
         }
-        // place bombs
-        Cell cell;
-        for (int[] bomb : bombs) {
-            cell = grid[bomb[0]][bomb[1]];
-            cell.isBomb = true;
-        }
 
+        placeBombs(numBombs);
 
-        getBombIndexValues();
     }
+    
+    private void placeBombs(int bombsToPlace) {
 
-
-    private void shuffleBombs() {
         Random random = new Random();
-        for (int row = 0; row < sizeY; ++row) {
-            for (int col = 0; col < sizeX; ++col) {
-                int i = random.nextInt(sizeY);
-                int j = random.nextInt(sizeX);
 
-                //swap
-                if (row != i && col != j) {
-                    boolean temp = grid[row][col].isBomb;
-                    grid[row][col].isBomb = grid[i][j].isBomb;
-                    grid[i][j].isBomb = temp;
-                }
+        while (bombsToPlace > 0) {
+            int i = random.nextInt(sizeY);
+            int j = random.nextInt(sizeX);
+            Cell cell = grid[i][j];
+            while (cell.isBomb) {
+                i = random.nextInt(sizeY);
+                j = random.nextInt(sizeX);
+                cell = grid[i][j];
             }
+            cell.isBomb = true;
+            getBombIndexValues(i, j);
+            --bombsToPlace;
         }
     }
 
-    private void getBombIndexValues() {
-        int[][] deltas = {
-                {-1, -1}, {-1, 0}, {-1, 1},
-                { 0, -1},          { 0, 1},
-                { 1, -1}, { 1, 0}, { 1, 1}
-        };
-        for (int row = 0; row < sizeY; ++row) {
-            for (int col = 0; col < sizeX; ++col) {
+    private void getBombIndexValues(int row, int col) {
 
+        for (int[] delta : deltas) {
+            int i_child = row + delta[0];
+            int j_child = col + delta[1];
 
-                if (grid[row][col].isBomb) {
-                    for (int[] delta : deltas) {
-                        int i_child = row + delta[0];
-                        int j_child = col + delta[1];
-
-                        if (i_child < 0 || i_child >= sizeY || j_child < 0 || j_child >= sizeX) {
-                            continue;
-                        }
-                        ++grid[i_child][j_child].nCloseBombs;
-                    }
-                }
+            if (i_child < 0 || i_child >= sizeY || j_child < 0 || j_child >= sizeX) {
+                continue;
             }
+            ++grid[i_child][j_child].nCloseBombs;
         }
+
     }
 
-    public TileRevealResult revealTile(int i, int j) {
+    TileRevealResult revealTile(int i, int j) {
 
         Cell cell = grid[i][j];
 
