@@ -234,10 +234,13 @@ class GUI extends JFrame {
 
             // i's correspond to Y coordinates
             boolean raised;
+            boolean drawBomb;
             for (int i = 0; i < boardSizeY; ++i) {
                 for (int j = 0; j < boardSizeX; ++j) {
 
                     raised = false;
+                    drawBomb = false;
+
                     Board.Cell cell = grid[i][j];
                     String str = "";
                     Game.State gameState = game.getState();
@@ -249,7 +252,7 @@ class GUI extends JFrame {
                             }
                             else { g.setColor(Color.red); }
 
-                            str = "(( ! ))";
+                            drawBomb = true;
                         }
                         else if (cell.getnCloseBombs() > 0) {
                             g.setColor(Color.yellow);
@@ -267,7 +270,7 @@ class GUI extends JFrame {
                             else if (gameState == Game.State.LOST) {
                                 g.setColor(Color.orange);
                             }
-                            str = "(( ! ))";
+                            drawBomb = true;
                         }
                         else {
                             g.setColor(Color.gray);
@@ -275,10 +278,13 @@ class GUI extends JFrame {
                         }
                     }
 
+                    int paintStartX = startX + spacing + j * cellSize;
+                    int paintStartY = startY + spacing + i * cellSize;
+
                     if (raised) {
                         g.fill3DRect(
-                                startX + spacing + j * cellSize,
-                                startY + spacing + i * cellSize,
+                                paintStartX,
+                                paintStartY,
                                 cellSize - 2 * spacing,
                                 cellSize - 2 * spacing,
                                 true
@@ -286,11 +292,12 @@ class GUI extends JFrame {
                     }
                     else {
                         g.fillRect(
-                                startX + spacing + j * cellSize,
-                                startY + spacing + i * cellSize,
+                                paintStartX,
+                                paintStartY,
                                 cellSize - 2 * spacing,
                                 cellSize - 2 * spacing
                         );
+
                     }
                     if (!str.isBlank()) {
                         g.setColor(Color.BLACK);
@@ -302,10 +309,45 @@ class GUI extends JFrame {
                         );
                     }
 
+                    else if (drawBomb) {
+                        paintBomb(g, paintStartX, paintStartY);
+                    }
+
                 }
             }
 
         }
+    }
+
+    private void paintBomb(Graphics g, int x, int y) {
+
+        int bombsize = (cellSize == SMALL_GRID_CELL_SIZE ? 26 : 13 );
+        int sizeFactor = (cellSize == SMALL_GRID_CELL_SIZE ? 2 : 1 );
+
+        int start = (cellSize - 2 * spacing - bombsize) / 2;
+        g.setColor(Color.black);
+
+        // paint the first two narrow rectangles
+        g.fillRect(x + start, y + start + 6 * sizeFactor, bombsize, 1 * sizeFactor);
+        g.fillRect(x + start + 6 * sizeFactor, y + start, 1 * sizeFactor, bombsize);
+
+        // paint the two medium rectangles
+        g.fillRect(x + start + 2 * sizeFactor, y + start + 4 * sizeFactor, 9 * sizeFactor, 5 * sizeFactor);
+        g.fillRect(x + start + 4 * sizeFactor, y + start + 2 * sizeFactor, 5 * sizeFactor, 9 * sizeFactor);
+
+        // paint the middle square
+        g.fillRect(x + start + 3 * sizeFactor, y + start + 3 * sizeFactor, 7 * sizeFactor, 7 * sizeFactor);
+
+        //four little squares
+        g.fillRect(x + start + 2 * sizeFactor, y + start + 2 * sizeFactor, 1 * sizeFactor, 1 * sizeFactor);
+        g.fillRect(x + start + 2 * sizeFactor, y + start + 10 * sizeFactor, 1 * sizeFactor, 1 * sizeFactor);
+        g.fillRect(x + start + 10 * sizeFactor, y + start + 2 * sizeFactor, 1 * sizeFactor, 1 * sizeFactor);
+        g.fillRect(x + start + 10 * sizeFactor, y + start + 10 * sizeFactor, 1 * sizeFactor, 1 * sizeFactor);
+
+        //white reflexion
+        g.setColor(Color.WHITE);
+        g.fillRect(x + start + 4 * sizeFactor, y + start + 4 * sizeFactor, 2 * sizeFactor, 2 * sizeFactor);
+
     }
 
     class TopLeftPanel extends JPanel {
