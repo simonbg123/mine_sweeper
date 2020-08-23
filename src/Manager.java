@@ -204,7 +204,7 @@ public class Manager implements ActionListener {
 
     private void restartGame() {
         gui.setContinueIsVisible(false);
-        
+
         nBombs = setInitialnBombs();
         bombIncrement = setBombIncrement();
         winLevel = setWinLevel();

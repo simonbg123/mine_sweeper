@@ -86,7 +86,6 @@ class GUI extends JFrame {
 
         init();
 
-
         TopLeftPanel optionsPanel = new TopLeftPanel();
         optionsPanel.setBounds(5, 5, OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT);
         add(optionsPanel);
@@ -316,7 +315,7 @@ class GUI extends JFrame {
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
             gameStateLabel = new JLabel();
-            gameStateLabel.setFont(new Font("Monospaced", Font.BOLD, 20));
+            gameStateLabel.setFont(new Font("Monospaced", Font.BOLD, 23));
             gameStateLabel.setForeground(Color.BLUE);
             gameStateLabel.setVerticalAlignment(SwingConstants.CENTER);
             add(gameStateLabel);
@@ -332,17 +331,17 @@ class GUI extends JFrame {
         public void paintComponent(Graphics g) {
 
             gameStateLabel.setText(gameStateString);
-            gameStateLabel.setBounds(35, 0, 200, ANNOUNCEMENT_PANEL_HEIGHT);
+            gameStateLabel.setBounds(35, 0, 250, ANNOUNCEMENT_PANEL_HEIGHT);
 
             gameResultLabel.setText(gameResultString);
-            gameResultLabel.setBounds(280, 0, ANNOUNCEMENT_PANEL_WIDTH - 330, ANNOUNCEMENT_PANEL_HEIGHT);
+            gameResultLabel.setBounds(295, 0, ANNOUNCEMENT_PANEL_WIDTH - 330, ANNOUNCEMENT_PANEL_HEIGHT);
 
             g.setColor(new JButton().getBackground());
             g.fillRect(0, 0, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT);
             g.setColor(Color.BLUE);
             g.fillRect(6, 6, ANNOUNCEMENT_PANEL_WIDTH - 12, ANNOUNCEMENT_PANEL_HEIGHT - 12);
             g.setColor(new JButton().getBackground());
-            g.fillRect(7, 7, ANNOUNCEMENT_PANEL_WIDTH - 14, ANNOUNCEMENT_PANEL_HEIGHT - 14);
+            g.fillRect(9, 9, ANNOUNCEMENT_PANEL_WIDTH - 18, ANNOUNCEMENT_PANEL_HEIGHT - 18);
 
 
 
