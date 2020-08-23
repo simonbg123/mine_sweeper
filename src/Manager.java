@@ -30,8 +30,8 @@ public class Manager implements ActionListener {
 
     static final Difficulty DEFAULT_DIFFICULTY = Difficulty.EASY;
     static final Mode DEFAULT_MODE = Mode.MULTILEVEL;
-    static final int DEFAULT_GRID_SIZE_Y = SMALL_GRID_SIZE_Y;
-    static final int DEFAULT_GRID_SIZE_X = SMALL_GRID_SIZE_X;
+    static final int DEFAULT_GRID_SIZE_Y = MEDIUM_GRID_SIZE_Y;
+    static final int DEFAULT_GRID_SIZE_X = MEDIUM_GRID_SIZE_X;
 
     private static final String LEVEL_COMPLETED = "LEVEL COMPLETED!";
     private static final String LEVELS_FINISHED = "CONGRATULATIONS, YOU HAVE WON!!!";
