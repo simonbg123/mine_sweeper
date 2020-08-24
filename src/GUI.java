@@ -37,6 +37,8 @@ class GUI extends JFrame {
     static final String MEDIUM_BOARD_OPTION_STRING = "Medium Board";
     static final String LARGE_BOARD_OPTION_STRING = "Large Board";
 
+    static final String FLAG_BUTTON_ACTION = "Flag Button";
+
     private int spacing;
     private int boardSizeX;
     private int boardSizeY;
@@ -55,6 +57,7 @@ class GUI extends JFrame {
     // this class is constructed inside Manager's constructor
     private JButton continueButton;
     private JButton newGameButton;
+    private JButton flagButton;
 
     private JRadioButtonMenuItem singleGameModeOption;
     private JRadioButtonMenuItem multilevelModeOption;
@@ -95,7 +98,7 @@ class GUI extends JFrame {
         optionsPanel.setBounds(5, 5, OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT);
         add(optionsPanel);
 
-        AnnouncementPanel announcementPanel = new AnnouncementPanel(new BorderLayout());
+        AnnouncementPanel announcementPanel = new AnnouncementPanel();
         announcementPanel.setBounds(5 + OPTIONS_PANEL_WIDTH + 5, 5, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT );
         add(announcementPanel);
 
@@ -270,20 +273,24 @@ class GUI extends JFrame {
                         }
                     }
                     else { //if (!cell.isVisible() {
-                        if (cell.isBomb() && gameState != Game.State.PLAYING) {
-                            if (gameState == Game.State.WON) {
-                                g.setColor(Color.GREEN);
-                                drawFlag = true;
-                            }
-                            else if (gameState == Game.State.LOST) {
-                                g.setColor(Color.orange);
-                                drawBomb = true;
-                            }
-
+                        if (cell.isBomb() && gameState == Game.State.WON) {
+                            g.setColor(Color.GREEN);
+                            drawFlag = true;
+                        }
+                        else if (cell.isBomb() && gameState == Game.State.LOST) {
+                            g.setColor(Color.orange);
+                            drawBomb = true;
                         }
                         else {
                             g.setColor(Color.gray);
                             raised = true;
+
+                            if (gameState == Game.State.PLACING_FLAGS && !cell.hasFlag()) {
+                                str = "?";
+                            }
+                            else if (cell.hasFlag()) {
+                                drawFlag = true;
+                            }
                         }
                     }
 
@@ -310,11 +317,11 @@ class GUI extends JFrame {
                     }
                     if (!str.isBlank()) {
                         g.setColor(Color.BLACK);
-                        g.setFont(new Font("Monospace", Font.BOLD, cellSize*4/ (cell.isBomb()? 15: 9) ));
+                        g.setFont(new Font("Monospace", Font.BOLD, cellSize*4 / 9 ));
                         g.drawString(
                                 str,
-                                startX + spacing + j * cellSize + cellSize / (cell.isBomb()? 5 : 3),
-                                startY + spacing + i * cellSize + cellSize * (cell.isBomb()? 13 : 15) / 24
+                                startX + spacing + j * cellSize + cellSize / 3,
+                                startY + spacing + i * cellSize + cellSize * 15 / 24
                         );
                     }
 
@@ -423,7 +430,6 @@ class GUI extends JFrame {
             add(newGameButton);
             add(continueButton);
 
-
         }
 
         public void paintComponent(Graphics g) {
@@ -436,8 +442,8 @@ class GUI extends JFrame {
         JLabel gameStateLabel;
         JLabel gameResultLabel;
 
-        AnnouncementPanel(LayoutManager layout) {
-            super(layout);
+        AnnouncementPanel() {
+            setLayout(null);
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
             gameStateLabel = new JLabel();
@@ -451,6 +457,12 @@ class GUI extends JFrame {
             gameResultLabel.setForeground(Color.BLACK);
             gameResultLabel.setVerticalAlignment(SwingConstants.CENTER);
             add(gameResultLabel);
+
+            flagButton = new JButton(new ImageIcon("src\\grey_flag.png"));
+            flagButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+            flagButton.setActionCommand(FLAG_BUTTON_ACTION);
+
+            add(flagButton);
 
         }
 
@@ -469,8 +481,8 @@ class GUI extends JFrame {
             g.setColor(new JButton().getBackground());
             g.fillRect(9, 9, ANNOUNCEMENT_PANEL_WIDTH - 18, ANNOUNCEMENT_PANEL_HEIGHT - 18);
 
-
-
+            flagButton.setBounds(PANEL_WIDTH - OPTIONS_PANEL_WIDTH - 125, 30, 64, 64);
+            flagButton.setBackground(Color.lightGray);
         }
     }
 
@@ -539,4 +551,9 @@ class GUI extends JFrame {
     void setLargeGridListener(ActionListener l) {
         largeGridOption.addActionListener(l);
     }
+
+    public void setFlagButtonListener(ActionListener l) {
+        flagButton.addActionListener(l);
+    }
 }
+

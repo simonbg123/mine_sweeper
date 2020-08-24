@@ -24,11 +24,13 @@ class Board {
         private int nCloseBombs;
         private boolean isBomb;
         private boolean isVisible;
+        private boolean hasFlag;
 
         Cell() {
             this.nCloseBombs = 0;
             this.isBomb = false;
             this.isVisible = false;
+            this.hasFlag = false;
         }
 
         int getnCloseBombs() {
@@ -41,6 +43,13 @@ class Board {
 
         boolean isVisible() {
             return isVisible;
+        }
+
+        boolean hasFlag() { return hasFlag; }
+
+        boolean toggleFlag() {
+            hasFlag = !hasFlag;
+            return hasFlag;
         }
     }
 
@@ -170,31 +179,31 @@ class Board {
         }
     }
 
-    public boolean tileIsVisible(int i, int j) {
+    boolean tileIsVisible(int i, int j) {
         return grid[i][j].isVisible;
     }
 
-    public int nTilesToUncover() {
+    int nTilesToUncover() {
         return nTilesToUncover;
     }
 
-    public void setSizeX(int size) {
+    void setSizeX(int size) {
         this.sizeX = size;
     }
 
-    public int getSizeX() {
+    int getSizeX() {
         return sizeX;
     }
 
-    public void setSizeY(int size) {
+    void setSizeY(int size) {
         this.sizeY = size;
     }
 
-    public int getSizeY() {
+    int getSizeY() {
         return sizeY;
     }
 
-    public Cell[][] getGrid() {
+    Cell[][] getGrid() {
         return grid;
     }
 

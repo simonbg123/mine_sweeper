@@ -82,6 +82,7 @@ public class Manager implements ActionListener {
         gui.setSmallGridListener(this);
         gui.setMediumGridListener(this);
         gui.setLargeGridListener(this);
+        gui.setFlagButtonListener(this);
     }
 
     void update(Game.State gameState) {
@@ -101,9 +102,8 @@ public class Manager implements ActionListener {
         else if (gameState == Game.State.LOST) {
             gui.setGameResultString(GAME_LOST);
         }
-        //else if (gameState == Game.State.PLAYING){}
 
-        gui.repaint(1);
+        gui.repaint(0);
 
     }
 
@@ -157,48 +157,58 @@ public class Manager implements ActionListener {
 
         String actionCommand = e.getActionCommand();
 
-        if (actionCommand.equals(GUI.CONTINUE_BUTTON_STRING)) {
+        switch (actionCommand) {
+            case GUI.FLAG_BUTTON_ACTION:
+                Game.State gameState = game.getState();
+                if (gameState == Game.State.WON || gameState == Game.State.LOST) {
+                    return;
+                }
+                // toggle Flag Buton
+                game.setState( gameState == Game.State.PLACING_FLAGS ? Game.State.PLAYING : Game.State.PLACING_FLAGS);
+                gui.repaint();
+                break;
+            case GUI.CONTINUE_BUTTON_STRING:
+                gui.setContinueIsVisible(false);
 
-            gui.setContinueIsVisible(false);
+                nBombs += bombIncrement;
+                ++currentLevel;
+                board.initialize(nBombs);
+                gui.setGameStateString(getGameStateString());
+                game.reset();
+                gui.setGameResultString("");
 
-            nBombs += bombIncrement;
-            ++currentLevel;
-            board.initialize(nBombs);
-            gui.setGameStateString(getGameStateString());
-            game.reset();
-            gui.setGameResultString("");
-
-            gui.repaint();
-        }
-        else if (actionCommand.equals(GUI.NEWGAME_BUTTON_STRING)) {
-            startNewGame();
-        }
-        else if (actionCommand.equals(GUI.SINGLE_GAME_OPTION_STRING)) {
-            mode = Mode.SINGLE_GAME;
-        }
-        else if (actionCommand.equals(GUI.MULTILEVEL_OPTION_STRING)) {
-            mode = Mode.MULTILEVEL;
-        }
-        else if (actionCommand.equals(GUI.EASY_OPTION_STRING)) {
-            difficulty = Difficulty.EASY;
-        }
-        else if (actionCommand.equals(GUI.MEDIUM_OPTION_STRING)) {
-            difficulty = Difficulty.MEDIUM;
-        }
-        else if (actionCommand.equals(GUI.HARD_OPTION_STRING)) {
-            difficulty = Difficulty.HARD;
-        }
-        else if (actionCommand.equals(GUI.SMALL_BOARD_OPTION_STRING)) {
-            if (board.getSizeX() == SMALL_GRID_SIZE_X) return; // current value was selected
-            processBoardSizeChangeRequest(actionCommand);
-        }
-        else if (actionCommand.equals(GUI.MEDIUM_BOARD_OPTION_STRING)) {
-            if (board.getSizeX() == MEDIUM_GRID_SIZE_X) return; // current value was selected
-            processBoardSizeChangeRequest(actionCommand);
-        }
-        else if (actionCommand.equals(GUI.LARGE_BOARD_OPTION_STRING)) {
-            if (board.getSizeX() == LARGE_GRID_SIZE_X) return; // current value was selected
-            processBoardSizeChangeRequest(actionCommand);
+                gui.repaint();
+                break;
+            case GUI.NEWGAME_BUTTON_STRING:
+                startNewGame();
+                break;
+            case GUI.SINGLE_GAME_OPTION_STRING:
+                mode = Mode.SINGLE_GAME;
+                break;
+            case GUI.MULTILEVEL_OPTION_STRING:
+                mode = Mode.MULTILEVEL;
+                break;
+            case GUI.EASY_OPTION_STRING:
+                difficulty = Difficulty.EASY;
+                break;
+            case GUI.MEDIUM_OPTION_STRING:
+                difficulty = Difficulty.MEDIUM;
+                break;
+            case GUI.HARD_OPTION_STRING:
+                difficulty = Difficulty.HARD;
+                break;
+            case GUI.SMALL_BOARD_OPTION_STRING:
+                if (board.getSizeX() == SMALL_GRID_SIZE_X) return; // current value was selected
+                processBoardSizeChangeRequest(actionCommand);
+                break;
+            case GUI.MEDIUM_BOARD_OPTION_STRING:
+                if (board.getSizeX() == MEDIUM_GRID_SIZE_X) return; // current value was selected
+                processBoardSizeChangeRequest(actionCommand);
+                break;
+            case GUI.LARGE_BOARD_OPTION_STRING:
+                if (board.getSizeX() == LARGE_GRID_SIZE_X) return; // current value was selected
+                processBoardSizeChangeRequest(actionCommand);
+                break;
         }
     }
 

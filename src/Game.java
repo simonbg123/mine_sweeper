@@ -73,19 +73,25 @@ public class Game implements MouseListener {
         return state;
     }
 
-    public void setState(State state) {
+    void setState(State state) {
         this.state = state;
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        if (!(state == State.PLAYING)) return;
+        if (!(state == State.PLAYING || state == State.PLACING_FLAGS)) return;
 
         int i = gui.getIfromY(e.getY());
         int j = gui.getJfromX(e.getX());
 
         if (board.tileIsVisible(i, j)) return; // title was already visible
+
+        if (state == State.PLACING_FLAGS) {
+            board.getGrid()[i][j].toggleFlag();
+            manager.update(state);
+            return;
+        }
 
         revealTile(i, j);
     }
