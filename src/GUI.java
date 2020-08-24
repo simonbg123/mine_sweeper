@@ -458,7 +458,7 @@ class GUI extends JFrame {
             gameResultLabel.setVerticalAlignment(SwingConstants.CENTER);
             add(gameResultLabel);
 
-            flagButton = new JButton(new ImageIcon("src\\grey_flag.png"));
+            flagButton = new JButton(new ImageIcon(getClass().getResource("/gray_flag.png")));
             flagButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
             flagButton.setActionCommand(FLAG_BUTTON_ACTION);
 
