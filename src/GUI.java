@@ -71,6 +71,11 @@ class GUI extends JFrame {
 
     private GUI(String gameStateString) {
 
+        System.out.println(Color.RED.getGreen());
+        System.out.println(Color.RED.getRed());
+        System.out.println(Color.RED.getBlue());
+        System.out.println(Color.RED.getAlpha());
+
 
         setLayout(null);
 
@@ -235,11 +240,13 @@ class GUI extends JFrame {
             // i's correspond to Y coordinates
             boolean raised;
             boolean drawBomb;
+            boolean drawFlag;
             for (int i = 0; i < boardSizeY; ++i) {
                 for (int j = 0; j < boardSizeX; ++j) {
 
                     raised = false;
                     drawBomb = false;
+                    drawFlag = false;
 
                     Board.Cell cell = grid[i][j];
                     String str = "";
@@ -265,12 +272,14 @@ class GUI extends JFrame {
                     else { //if (!cell.isVisible() {
                         if (cell.isBomb() && gameState != Game.State.PLAYING) {
                             if (gameState == Game.State.WON) {
-                                g.setColor(Color.green);
+                                g.setColor(Color.GREEN);
+                                drawFlag = true;
                             }
                             else if (gameState == Game.State.LOST) {
                                 g.setColor(Color.orange);
+                                drawBomb = true;
                             }
-                            drawBomb = true;
+
                         }
                         else {
                             g.setColor(Color.gray);
@@ -312,6 +321,9 @@ class GUI extends JFrame {
                     else if (drawBomb) {
                         paintBomb(g, paintStartX, paintStartY);
                     }
+                    else if (drawFlag) {
+                        paintFlag(g, paintStartX, paintStartY);
+                    }
 
                 }
             }
@@ -321,8 +333,8 @@ class GUI extends JFrame {
 
     private void paintBomb(Graphics g, int x, int y) {
 
-        int bombsize = (cellSize == SMALL_GRID_CELL_SIZE ? 26 : 13 );
-        int sizeFactor = (cellSize == SMALL_GRID_CELL_SIZE ? 2 : 1 );
+        int bombsize = (cellSize == LARGE_GRID_CELL_SIZE ? 13 : 26 );
+        int sizeFactor = (cellSize == LARGE_GRID_CELL_SIZE ? 1 : 2 );
 
         int start = (cellSize - 2 * spacing - bombsize) / 2;
         g.setColor(Color.black);
@@ -348,6 +360,49 @@ class GUI extends JFrame {
         g.setColor(Color.WHITE);
         g.fillRect(x + start + 4 * sizeFactor, y + start + 4 * sizeFactor, 2 * sizeFactor, 2 * sizeFactor);
 
+    }
+
+    private void paintFlag(Graphics g, int x, int y) {
+
+        switch (cellSize) {
+            case SMALL_GRID_CELL_SIZE:
+                x += 6;
+                y += 6;
+            case MEDIUM_GRID_CELL_SIZE:
+                //base
+                g.setColor(Color.BLACK);
+                g.fillRect(x + 7, y + 27, 22, 4);
+                g.fillRect(x + 15, y + 25, 10, 2);
+                g.fillRect(x + 19, y + 19, 2, 6);
+                // flag
+                g.setColor(Color.RED);
+                g.fillRect(x + 15, y + 17, 6, 2);
+                g.fillRect(x + 11, y + 15, 10, 2);
+                g.fillRect(x + 7, y + 13, 14, 2);
+                g.fillRect(x + 5, y + 11, 16, 2);
+                g.fillRect(x + 7, y + 9, 14, 2);
+                g.fillRect(x + 9, y + 7, 12, 2);
+                g.fillRect(x + 13, y + 5, 8, 2);
+                g.fillRect(x + 17, y + 3, 4, 2);
+
+                break;
+            case LARGE_GRID_CELL_SIZE:
+                x += 1;
+                //base
+                g.setColor(Color.BLACK);
+                g.fillRect(x + 4, y + 22, 18, 2);
+                g.fillRect(x + 10, y + 20, 8, 2);
+                g.fillRect(x + 14, y + 16, 2, 4);
+                // flag
+                g.setColor(Color.RED);
+                g.fillRect(x + 10, y + 14, 6, 2);
+                g.fillRect(x + 6, y + 12, 10, 2);
+                g.fillRect(x + 4, y + 10, 12, 2);
+                g.fillRect(x + 6, y + 8, 10, 2);
+                g.fillRect(x + 8, y + 6, 8, 2);
+                g.fillRect(x + 12, y + 4, 4, 2);
+                break;
+        }
     }
 
     class TopLeftPanel extends JPanel {

@@ -9,7 +9,8 @@ public class Game implements MouseListener {
     enum State {
         PLAYING,
         WON,
-        LOST
+        LOST,
+        PLACING_FLAGS
     }
 
     private static Game instance = null;
@@ -44,7 +45,7 @@ public class Game implements MouseListener {
         isFirstMove = true;
     }
 
-    void revealTile(int i, int j) {
+    private void revealTile(int i, int j) {
 
         TileRevealResult result = board.revealTile(i, j);
 
