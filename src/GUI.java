@@ -74,12 +74,6 @@ class GUI extends JFrame {
 
     private GUI(String gameStateString) {
 
-        System.out.println(Color.RED.getGreen());
-        System.out.println(Color.RED.getRed());
-        System.out.println(Color.RED.getBlue());
-        System.out.println(Color.RED.getAlpha());
-
-
         setLayout(null);
 
         this.gameStateString = gameStateString;
@@ -458,7 +452,9 @@ class GUI extends JFrame {
             gameResultLabel.setVerticalAlignment(SwingConstants.CENTER);
             add(gameResultLabel);
 
-            flagButton = new JButton(new ImageIcon(getClass().getResource("/gray_flag.png")));
+            flagButton = new JButton(new ImageIcon(getClass().getResource("/res/gray_flag.png")));
+            // below works too
+            // flagButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("res/gray_flag.png")));
             flagButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
             flagButton.setActionCommand(FLAG_BUTTON_ACTION);
 
