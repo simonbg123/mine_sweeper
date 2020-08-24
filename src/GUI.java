@@ -1,7 +1,10 @@
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * Displays the board, controls, menu and announcements.
@@ -431,7 +434,7 @@ class GUI extends JFrame {
         }
     }
 
-    class AnnouncementPanel extends JPanel {
+    class AnnouncementPanel extends JPanel implements MouseListener {
 
         JLabel gameStateLabel;
         JLabel gameResultLabel;
@@ -457,7 +460,7 @@ class GUI extends JFrame {
             // flagButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("res/gray_flag.png")));
             flagButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
             flagButton.setActionCommand(FLAG_BUTTON_ACTION);
-
+            flagButton.addMouseListener(this);
             add(flagButton);
 
         }
@@ -479,8 +482,43 @@ class GUI extends JFrame {
 
             flagButton.setBounds(PANEL_WIDTH - OPTIONS_PANEL_WIDTH - 125, 30, 64, 64);
             flagButton.setBackground(Color.lightGray);
+
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            flagButton.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createBevelBorder(BevelBorder.LOWERED), BorderFactory.createLineBorder(Color.DARK_GRAY, 1)));
+            this.repaint();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            flagButton.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createBevelBorder(BevelBorder.RAISED), BorderFactory.createLineBorder(Color.DARK_GRAY, 1)));
+            this.repaint();
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            flagButton.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createBevelBorder(BevelBorder.RAISED), BorderFactory.createLineBorder(Color.DARK_GRAY, 1)));
+            this.repaint();
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            flagButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+            this.repaint();
         }
     }
+
+
 
     /**
      * Get grid j index from JPanel X coordinate
@@ -548,7 +586,7 @@ class GUI extends JFrame {
         largeGridOption.addActionListener(l);
     }
 
-    public void setFlagButtonListener(ActionListener l) {
+    void setFlagButtonListener(ActionListener l) {
         flagButton.addActionListener(l);
     }
 }

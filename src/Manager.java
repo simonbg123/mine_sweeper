@@ -132,13 +132,13 @@ public class Manager implements ActionListener {
         else if (mode == Mode.SINGLE_GAME) {
             switch (difficulty) {
                 case EASY:
-                    nBombs = 6 * sizeX * sizeY / 100;
+                    nBombs = 7 * sizeX * sizeY / 100;
                     break;
                 case MEDIUM:
-                    nBombs = 11 * sizeX * sizeY / 100;
+                    nBombs = 12 * sizeX * sizeY / 100;
                     break;
                 case HARD:
-                    nBombs = 15 * sizeX * sizeY / 100;
+                    nBombs = 17 * sizeX * sizeY / 100;
             }
         }
         return nBombs;
