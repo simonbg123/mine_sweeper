@@ -204,7 +204,7 @@ class Board implements IBoard {
         return sizeY;
     }
     @Override
-    public void setGrid(int sizeX, int sizeY) {
+    public void setGrid(int sizeY, int sizeX) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         grid = new Cell[sizeY][sizeX];
