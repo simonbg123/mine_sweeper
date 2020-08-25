@@ -205,6 +205,7 @@ public class MainGUI extends JFrame implements ActionListener {
                 // toggle Flag Buton
                 manager.toggleFlagMode();
                 refresh();
+                break;
 
             case SINGLE_GAME_OPTION_STRING:
                 manager.setMode(Manager.Mode.SINGLE_GAME);
