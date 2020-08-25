@@ -1,20 +1,24 @@
+package domain;
+
 import interfaces.IManager;
 
 public class Manager implements IManager {
 
 
-    static final int SMALL_GRID_SIZE_Y = 10;
-    static final int SMALL_GRID_SIZE_X = 18;
-    static final int MEDIUM_GRID_SIZE_Y = 15;
-    static final int MEDIUM_GRID_SIZE_X = 25;
-    static final int LARGE_GRID_SIZE_Y = 20;
-    static final int LARGE_GRID_SIZE_X = 36;
-    private static final int WIN_LEVEL = 5;
+    public static final int SMALL_GRID_SIZE_Y = 10;
+    public static final int SMALL_GRID_SIZE_X = 18;
+    public static final int MEDIUM_GRID_SIZE_Y = 15;
+    public static final int MEDIUM_GRID_SIZE_X = 25;
+    public static final int LARGE_GRID_SIZE_Y = 20;
+    public static final int LARGE_GRID_SIZE_X = 36;
 
-    static final Difficulty DEFAULT_DIFFICULTY = Difficulty.MEDIUM;
-    static final Mode DEFAULT_MODE = Mode.MULTILEVEL;
+    public static final Difficulty DEFAULT_DIFFICULTY = Difficulty.MEDIUM;
+    public static final Mode DEFAULT_MODE = Mode.MULTILEVEL;
+
     static final int DEFAULT_GRID_SIZE_Y = MEDIUM_GRID_SIZE_Y;
     static final int DEFAULT_GRID_SIZE_X = MEDIUM_GRID_SIZE_X;
+
+    private static final int WIN_LEVEL = 5;
 
     private Mode mode;
     private Difficulty difficulty;

@@ -1,3 +1,5 @@
+package domain;
+
 import interfaces.IBoard;
 import interfaces.IGame;
 
@@ -18,7 +20,7 @@ public class Game implements IGame {
         isFirstMove = true;
     }
 
-    static Game getInstance() {
+    public static Game getInstance() {
         if (instance == null) {
             instance = new Game();
         }
