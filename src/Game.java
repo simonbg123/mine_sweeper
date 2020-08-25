@@ -1,23 +1,14 @@
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import interfaces.IBoard;
+import interfaces.IGame;
 
 /**
  * Manages tile revealing events and state of a particular game
  */
-public class Game implements MouseListener {
-
-    enum State {
-        PLAYING,
-        WON,
-        LOST,
-        PLACING_FLAGS
-    }
+public class Game implements IGame {
 
     private static Game instance = null;
 
     private Board board;
-    private GUI gui;
-    private Manager manager;
     private State state;
     private boolean isFirstMove;
 
@@ -27,17 +18,11 @@ public class Game implements MouseListener {
         isFirstMove = true;
     }
 
-    public static Game getInstance() {
+    static Game getInstance() {
         if (instance == null) {
             instance = new Game();
         }
         return instance;
-    }
-
-    void initialize() {
-        gui = GUI.getInstance();
-        manager = Manager.getInstance();
-
     }
 
     void reset() {
@@ -45,74 +30,35 @@ public class Game implements MouseListener {
         isFirstMove = true;
     }
 
-    private void revealTile(int i, int j) {
+    @Override
+    public void revealTile(int i, int j) {
 
-        TileRevealResult result = board.revealTile(i, j);
+        var result = board.revealTile(i, j);
 
         if (isFirstMove) { // guarantees a first good move
-            while (result == TileRevealResult.LOSS) {
-                board.initialize(manager.getnBombs());
+            while (result == IBoard.RevealResult.LOSS) {
+                board.reinitialize();
                 result = board.revealTile(i, j);
             }
             isFirstMove = false;
         }
 
 
-        if (result == TileRevealResult.WIN) {
+        if (result == IBoard.RevealResult.WIN) {
             state = State.WON;
         }
-        else if (result == TileRevealResult.LOSS) {
+        else if (result == IBoard.RevealResult.LOSS) {
             state = State.LOST;
         }
-
-        manager.update(state);
-
     }
 
-    State getState() {
+    @Override
+    public State getState() {
         return state;
     }
 
-    void setState(State state) {
+    @Override
+    public void setState(State state) {
         this.state = state;
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-
-        if (!(state == State.PLAYING || state == State.PLACING_FLAGS)) return;
-
-        int i = gui.getIfromY(e.getY());
-        int j = gui.getJfromX(e.getX());
-
-        if (board.tileIsVisible(i, j)) return; // title was already visible
-
-        if (state == State.PLACING_FLAGS) {
-            board.getGrid()[i][j].toggleFlag();
-            manager.update(state);
-            return;
-        }
-
-        revealTile(i, j);
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
     }
 }

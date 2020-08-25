@@ -1,7 +1,10 @@
+import interfaces.ICell;
+import interfaces.IManager;
+
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -9,9 +12,7 @@ import java.awt.event.MouseListener;
 /**
  * Displays the board, controls, menu and announcements.
  */
-class GUI extends JFrame {
-
-    private static GUI instance = null;
+class GUI extends JFrame implements ActionListener {
 
     private static final int SMALL_GRID_SPACING = 2;
     private static final int MEDIUM_GRID_SPACING = 1;
@@ -29,18 +30,30 @@ class GUI extends JFrame {
     private static final int ANNOUNCEMENT_PANEL_WIDTH = PANEL_WIDTH - OPTIONS_PANEL_WIDTH - 25;
     private static final int ANNOUNCEMENT_PANEL_HEIGHT = 128;
 
-    static final String CONTINUE_BUTTON_STRING = "Continue";
-    static final String NEWGAME_BUTTON_STRING = "New Game";
-    static final String SINGLE_GAME_OPTION_STRING = "Single-Game";
-    static final String MULTILEVEL_OPTION_STRING = "Multilevel";
-    static final String EASY_OPTION_STRING = "Easy";
-    static final String MEDIUM_OPTION_STRING = "Medium";
-    static final String HARD_OPTION_STRING = "Hard";
-    static final String SMALL_BOARD_OPTION_STRING = "Small Board";
-    static final String MEDIUM_BOARD_OPTION_STRING = "Medium Board";
-    static final String LARGE_BOARD_OPTION_STRING = "Large Board";
+    private static final String CONTINUE_BUTTON_STRING = "Continue";
+    private static final String NEWGAME_BUTTON_STRING = "New Game";
 
-    static final String FLAG_BUTTON_ACTION = "Flag Button";
+    private static final String MODE_MENU_STRING = "Mode";
+    private static final String DIFFICULTY_MENU_STRING = "Difficulty";
+    private static final String BOARD_SIZE_MENU_STRING = "Board size";
+    private static final String SINGLE_GAME_OPTION_STRING = "Single-Game";
+    private static final String MULTILEVEL_OPTION_STRING = "Multilevel";
+    private static final String EASY_OPTION_STRING = "Easy";
+    private static final String MEDIUM_OPTION_STRING = "Medium";
+    private static final String HARD_OPTION_STRING = "Hard";
+    private static final String SMALL_BOARD_OPTION_STRING = "Small Board";
+    private static final String MEDIUM_BOARD_OPTION_STRING = "Medium Board";
+    private static final String LARGE_BOARD_OPTION_STRING = "Large Board";
+
+    private static final String FLAG_BUTTON_ACTION = "Flag Button";
+
+    private static final String LEVEL_COMPLETED_STRING = "LEVEL COMPLETED!";
+    private static final String LEVELS_FINISHED_STRING = "CONGRATULATIONS, YOU WIN!!!";
+    private static final String GAME_LOST_STRING = "BOOM! GAME OVER. TRY AGAIN!";
+    private static final String NO_RESULT = "";
+
+    private static final String BOARD_SIZE_CHANGE_WARNING = "This change will cause a new game to be started. Would you like to proceed?";
+    private static final String BOARD_SIZE_CHANGE_WARNING_TITLE = "Board Size Change";
 
     private int spacing;
     private int boardSizeX;
@@ -51,16 +64,11 @@ class GUI extends JFrame {
 
     private Board board; // logical board
     private Game game;
+    private Manager manager;
 
     private String gameStateString;
     private String gameResultString;
     private boolean continueIsVisible = false;
-
-    // the listener for these elements is given in Manager in the init() method since
-    // this class is constructed inside Manager's constructor
-    private JButton continueButton;
-    private JButton newGameButton;
-    private JButton flagButton;
 
     private JRadioButtonMenuItem singleGameModeOption;
     private JRadioButtonMenuItem multilevelModeOption;
@@ -74,22 +82,24 @@ class GUI extends JFrame {
     private BoardGUI boardGUI;
 
 
-
-    private GUI(String gameStateString) {
-
-        setLayout(null);
-
-        this.gameStateString = gameStateString;
-        gameResultString = "";
+    public GUI() {
 
         board = Board.getInstance();
         game = Game.getInstance();
+        manager = new Manager(board, game);
+
+        setLayout(null);
+
+
+        setGameStateString();
+        setGameResultString(NO_RESULT);
+
 
         setTitle("Mine Sweeper");
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        init();
+        initBoard();
 
         TopLeftPanel optionsPanel = new TopLeftPanel();
         optionsPanel.setBounds(5, 5, OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT);
@@ -100,7 +110,7 @@ class GUI extends JFrame {
         add(announcementPanel);
 
 
-        JMenu modeMenu = new JMenu("Mode");
+        JMenu modeMenu = new JMenu(MODE_MENU_STRING);
         ButtonGroup modeButtonGroup = new ButtonGroup();
         singleGameModeOption = new JRadioButtonMenuItem(SINGLE_GAME_OPTION_STRING);
         multilevelModeOption = new JRadioButtonMenuItem(MULTILEVEL_OPTION_STRING);
@@ -113,10 +123,12 @@ class GUI extends JFrame {
 
         modeButtonGroup.add(singleGameModeOption);
         modeButtonGroup.add(multilevelModeOption);
+        singleGameModeOption.addActionListener(this);
+        multilevelModeOption.addActionListener(this);
         modeMenu.add(singleGameModeOption);
         modeMenu.add(multilevelModeOption);
 
-        JMenu difficultyMenu = new JMenu("Difficulty");
+        JMenu difficultyMenu = new JMenu(DIFFICULTY_MENU_STRING);
         ButtonGroup difficultyButtonGroup = new ButtonGroup();
         difficultyEasyOption = new JRadioButtonMenuItem(EASY_OPTION_STRING);
         difficultyMediumOption = new JRadioButtonMenuItem(MEDIUM_OPTION_STRING);
@@ -135,11 +147,14 @@ class GUI extends JFrame {
         difficultyButtonGroup.add(difficultyEasyOption);
         difficultyButtonGroup.add(difficultyMediumOption);
         difficultyButtonGroup.add(difficultyHardOption);
+        difficultyEasyOption.addActionListener(this);
+        difficultyMediumOption.addActionListener(this);
+        difficultyHardOption.addActionListener(this);
         difficultyMenu.add(difficultyEasyOption);
         difficultyMenu.add(difficultyMediumOption);
         difficultyMenu.add(difficultyHardOption);
 
-        JMenu boardSizeMenu = new JMenu("Board Size");
+        JMenu boardSizeMenu = new JMenu(BOARD_SIZE_MENU_STRING);
         ButtonGroup boardSizeButtonGroup = new ButtonGroup();
         smallGridOption = new JRadioButtonMenuItem(SMALL_BOARD_OPTION_STRING);
         mediumGridOption = new JRadioButtonMenuItem(MEDIUM_BOARD_OPTION_STRING);
@@ -158,6 +173,9 @@ class GUI extends JFrame {
         boardSizeButtonGroup.add(smallGridOption);
         boardSizeButtonGroup.add(mediumGridOption);
         boardSizeButtonGroup.add(largeGridOption);
+        smallGridOption.addActionListener(this);
+        mediumGridOption.addActionListener(this);
+        largeGridOption.addActionListener(this);
         boardSizeMenu.add(smallGridOption);
         boardSizeMenu.add(mediumGridOption);
         boardSizeMenu.add(largeGridOption);
@@ -176,7 +194,7 @@ class GUI extends JFrame {
 
     }
 
-    void init() {
+    void initBoard() {
         boardSizeX = board.getSizeX();
         boardSizeY = board.getSizeY();
 
@@ -209,28 +227,112 @@ class GUI extends JFrame {
         add(boardGUI);
     }
 
-    public static GUI getInstance(String str) {
-        if (instance == null) {
-            instance = new GUI(str);
+    private void refresh() {
+
+        Game.State gameState = game.getState();
+        setGameStateString();
+
+        if (gameState == Game.State.WON) {
+            if (manager.getCurrentLevel() == manager.getWinLevel()) {
+                gameResultString = LEVELS_FINISHED_STRING;
+
+            }
+            else {
+                gameResultString = LEVEL_COMPLETED_STRING;
+                setContinueIsVisible(true);
+            }
         }
-        return instance;
-    }
-    public static GUI getInstance() {
-        if (instance == null) {
-            instance = new GUI("");
+        else if (gameState == Game.State.LOST) {
+            gameResultString = GAME_LOST_STRING;
         }
-        return instance;
+
+        repaint(0);
+
     }
 
-    class BoardGUI extends JPanel {
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
-        public BoardGUI() {
+        String actionCommand = e.getActionCommand();
+        switch (actionCommand) {
+            case SINGLE_GAME_OPTION_STRING:
+                manager.setMode(Manager.Mode.SINGLE_GAME);
+                break;
+
+            case MULTILEVEL_OPTION_STRING:
+                manager.setMode(Manager.Mode.MULTILEVEL);
+                break;
+
+            case EASY_OPTION_STRING:
+                manager.setDifficulty(Manager.Difficulty.EASY);
+                break;
+
+            case MEDIUM_OPTION_STRING:
+                manager.setDifficulty(Manager.Difficulty.MEDIUM);
+                break;
+
+            case HARD_OPTION_STRING:
+                manager.setDifficulty(Manager.Difficulty.HARD);
+                break;
+
+            case SMALL_BOARD_OPTION_STRING:
+                if (board.getSizeX() == Manager.SMALL_GRID_SIZE_X) return; // current value was selected
+                processBoardSizeChangeRequest(actionCommand);
+                break;
+            case MEDIUM_BOARD_OPTION_STRING:
+                if (board.getSizeX() == Manager.MEDIUM_GRID_SIZE_X) return; // current value was selected
+                processBoardSizeChangeRequest(actionCommand);
+                break;
+            case LARGE_BOARD_OPTION_STRING:
+                if (board.getSizeX() == Manager.LARGE_GRID_SIZE_X) return; // current value was selected
+                processBoardSizeChangeRequest(actionCommand);
+                break;
+        }
+    }
+
+    private void processBoardSizeChangeRequest(String change) {
+        int answer = JOptionPane.showOptionDialog(
+                this,
+                BOARD_SIZE_CHANGE_WARNING,
+                BOARD_SIZE_CHANGE_WARNING_TITLE,
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                null,
+                JOptionPane.YES_OPTION
+        );
+        if (answer != JOptionPane.OK_OPTION) return;
+
+        int sizeX = 0, sizeY = 0;
+
+        switch (change) {
+            case SMALL_BOARD_OPTION_STRING:
+                sizeX = Manager.SMALL_GRID_SIZE_X;
+                sizeY = Manager.SMALL_GRID_SIZE_Y;
+                break;
+            case MEDIUM_BOARD_OPTION_STRING:
+                sizeX = Manager.MEDIUM_GRID_SIZE_X;
+                sizeY = Manager.MEDIUM_GRID_SIZE_Y;
+                break;
+            case LARGE_BOARD_OPTION_STRING:
+                sizeX = Manager.LARGE_GRID_SIZE_X;
+                sizeY = Manager.LARGE_GRID_SIZE_Y;
+        }
+
+        manager.setBoardSizeAndRestart(sizeX, sizeY);
+        initBoard();
+        refresh();
+    }
+
+
+    class BoardGUI extends JPanel implements MouseListener{
+
+        BoardGUI() {
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-            addMouseListener(game);
+            addMouseListener(this);
         }
 
         public void paintComponent(Graphics g) {
-            Board.Cell[][] grid = board.getGrid();
 
             g.setColor(Color.black);
             g.fillRect(0, 0, gridWidth, gridHeight);
@@ -248,7 +350,7 @@ class GUI extends JFrame {
                     drawBomb = false;
                     drawFlag = false;
 
-                    Board.Cell cell = grid[i][j];
+                    ICell cell = board.getCell(i, j);
                     String str = "";
                     Game.State gameState = game.getState();
 
@@ -331,8 +433,52 @@ class GUI extends JFrame {
 
                 }
             }
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            var state = game.getState();
+
+            if (!(state == Game.State.PLAYING || state == Game.State.PLACING_FLAGS)) return;
+
+            int i = getIfromY(e.getY());
+            int j = getJfromX(e.getX());
+
+            var cell = board.getCell(i, j);
+
+            if (cell.isVisible()) return; // title was already visible
+
+            if (state == Game.State.PLACING_FLAGS) {
+                cell.toggleFlag();
+                refresh();
+                return;
+            }
+
+            game.revealTile(i, j);
+            refresh();
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
 
         }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+
+
     }
 
     private void paintBomb(Graphics g, int x, int y) {
@@ -409,7 +555,10 @@ class GUI extends JFrame {
         }
     }
 
-    class TopLeftPanel extends JPanel {
+    class TopLeftPanel extends JPanel implements ActionListener{
+
+        private JButton continueButton;
+        private JButton newGameButton;
 
         TopLeftPanel() {
             setLayout(null);
@@ -417,12 +566,14 @@ class GUI extends JFrame {
 
             newGameButton = new JButton(NEWGAME_BUTTON_STRING);
             newGameButton.setBounds(2, 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3 );
+            newGameButton.addActionListener(this);
             //newGameButton.setDisabledSelectedIcon(newGameButton.getDisabledSelectedIcon());
 
-            // the listener for this button is given in Manager in the init() method since
+            // the listener for this button is given in Manager in the initBoard() method since
             // this class is constructed inside Manager's constructor
             continueButton = new JButton(CONTINUE_BUTTON_STRING);
             continueButton.setBounds(2, OPTIONS_PANEL_HEIGHT / 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3);
+            continueButton.addActionListener(this);
 
             add(newGameButton);
             add(continueButton);
@@ -432,9 +583,51 @@ class GUI extends JFrame {
         public void paintComponent(Graphics g) {
             continueButton.setEnabled(continueIsVisible);
         }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String actionCommand = e.getActionCommand();
+
+            switch (actionCommand) {
+                case FLAG_BUTTON_ACTION:
+
+                    Game.State gameState = game.getState();
+                    if (gameState == Game.State.WON || gameState == Game.State.LOST) {
+                        return;
+                    }
+
+                    // toggle Flag Buton
+                    manager.toggleFlagMode();
+
+                    refresh();
+                    break;
+
+                case CONTINUE_BUTTON_STRING:
+
+                    manager.setNextLevel();
+
+                    setContinueIsVisible(false);
+                    setGameStateString();
+                    setGameResultString(NO_RESULT);
+                    refresh();
+                    break;
+
+                case NEWGAME_BUTTON_STRING:
+
+                    manager.setNewGame();
+
+                    setContinueIsVisible(false);
+                    setGameStateString();
+                    setGameResultString(NO_RESULT);
+                    refresh();
+                    break;
+            }
+        }
     }
 
-    class AnnouncementPanel extends JPanel implements MouseListener {
+    class AnnouncementPanel extends JPanel implements MouseListener, ActionListener {
+
+        private JButton flagButton;
 
         JLabel gameStateLabel;
         JLabel gameResultLabel;
@@ -461,6 +654,7 @@ class GUI extends JFrame {
             flagButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
             flagButton.setActionCommand(FLAG_BUTTON_ACTION);
             flagButton.addMouseListener(this);
+            flagButton.addActionListener(this);
             add(flagButton);
 
         }
@@ -516,6 +710,14 @@ class GUI extends JFrame {
             flagButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
             this.repaint();
         }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getActionCommand().equals(FLAG_BUTTON_ACTION)) {
+                manager.toggleFlagMode();
+                refresh();
+            }
+        }
     }
 
 
@@ -538,56 +740,19 @@ class GUI extends JFrame {
         return (y - 3 * spacing) / cellSize;
     }
 
-    void setGameStateString(String str) { this.gameStateString = str; }
+    void setGameStateString() {
+        gameStateString = "<html>LEVEL &nbsp;&nbsp&nbsp;&nbsp&nbsp;: " + manager.getCurrentLevel() + "/" + manager.getWinLevel() + "<br>" +
+                "BOMBS &nbsp;&nbsp&nbsp;&nbsp&nbsp;: " + manager.getnBombs() + "<br>" +
+                "TILES LEFT : " + board.nTilesToUncover() + "</html>";
+    }
 
-    void setGameResultString(String str) { this.gameResultString = str; }
+    void setGameResultString(String gameResultString) {
+        this.gameResultString = gameResultString;
+    }
 
     void setContinueIsVisible(boolean continueIsVisible) {
         this.continueIsVisible = continueIsVisible;
     }
 
-    void setContinueButtonListener(ActionListener l) {
-        continueButton.addActionListener(l);
-    }
-
-    void setNewGameButtonListener(ActionListener l) {
-        newGameButton.addActionListener(l);
-    }
-
-    void setSingleGameModeListener(ActionListener l) {
-        singleGameModeOption.addActionListener(l);
-    }
-
-    void setMultilevelModeListener(ActionListener l) {
-        multilevelModeOption.addActionListener(l);
-    }
-
-    void setEasyDifficultyListener(ActionListener l) {
-        difficultyEasyOption.addActionListener(l);
-    }
-
-    void setMediumDifficultyListener(ActionListener l) {
-        difficultyMediumOption.addActionListener(l);
-    }
-
-    void setHardDifficultyListener(ActionListener l) {
-        difficultyHardOption.addActionListener(l);
-    }
-
-    void setSmallGridListener(ActionListener l) {
-        smallGridOption.addActionListener(l);
-    }
-
-    void setMediumGridListener(ActionListener l) {
-        mediumGridOption.addActionListener(l);
-    }
-
-    void setLargeGridListener(ActionListener l) {
-        largeGridOption.addActionListener(l);
-    }
-
-    void setFlagButtonListener(ActionListener l) {
-        flagButton.addActionListener(l);
-    }
 }
 

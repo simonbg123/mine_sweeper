@@ -1,10 +1,13 @@
+import interfaces.IBoard;
+import interfaces.ICell;
+
 import java.util.LinkedList;
 import java.util.Random;
 
 /**
  * Represents the game board logical structure. It modifies the board state.
  */
-class Board {
+class Board implements IBoard {
 
     /**
      * n rows, n columns
@@ -20,7 +23,7 @@ class Board {
             { 1, -1}, { 1, 0}, { 1, 1}
     };
 
-    class Cell {
+    class Cell implements ICell {
         private int nCloseBombs;
         private boolean isBomb;
         private boolean isVisible;
@@ -33,23 +36,23 @@ class Board {
             this.hasFlag = false;
         }
 
-        int getnCloseBombs() {
+        @Override
+        public int getnCloseBombs() {
             return nCloseBombs;
         }
-
-        boolean isBomb() {
+        @Override
+        public boolean isBomb() {
             return isBomb;
         }
-
-        boolean isVisible() {
+        @Override
+        public boolean isVisible() {
             return isVisible;
         }
-
-        boolean hasFlag() { return hasFlag; }
-
-        boolean toggleFlag() {
+        @Override
+        public boolean hasFlag() { return hasFlag; }
+        @Override
+        public void toggleFlag() {
             hasFlag = !hasFlag;
-            return hasFlag;
         }
     }
 
@@ -57,19 +60,19 @@ class Board {
     private int sizeY;
     private Cell[][] grid;
     private int nTilesToUncover;
+    private int nBombs; // stores the last number of bombs for purposes of re-initializing after a first-move fail.
 
     private Board(int m, int n) {
-        this.sizeY = m;
-        this.sizeX = n;
-        setGrid();
+        setGrid(m, n);
     }
 
     static Board getInstance() {
         return instance;
     }
 
-    void initialize(int numBombs) {
-
+    @Override
+    public void initialize(int numBombs) {
+        nBombs = numBombs;
         nTilesToUncover = sizeX * sizeY - numBombs;
         // create cells
         for (int row = 0; row < sizeY; ++row ) {
@@ -79,7 +82,11 @@ class Board {
         }
 
         placeBombs(numBombs);
+    }
 
+    @Override
+    public void reinitialize() {
+        initialize(nBombs);
     }
 
     private void placeBombs(int bombsToPlace) {
@@ -115,16 +122,17 @@ class Board {
 
     }
 
-    TileRevealResult revealTile(int i, int j) {
+    @Override
+    public RevealResult revealTile(int i, int j) {
 
         Cell cell = grid[i][j];
 
-        if (cell.isVisible) return TileRevealResult.CONTINUE; // an already discovered tile was selected
+        if (cell.isVisible) return RevealResult.CONTINUE; // an already discovered tile was selected
 
         cell.isVisible = true;
 
         if (cell.isBomb) {
-            return TileRevealResult.LOSS;
+            return RevealResult.LOSS;
         }
         else if (cell.nCloseBombs == 0) {
             cell.isVisible = false; // flipNeighbours will switch it back to true
@@ -134,7 +142,7 @@ class Board {
             --nTilesToUncover;
         }
 
-        return nTilesToUncover == 0 ? TileRevealResult.WIN : TileRevealResult.CONTINUE;
+        return nTilesToUncover == 0 ? RevealResult.WIN : RevealResult.CONTINUE;
     }
 
 
@@ -179,36 +187,26 @@ class Board {
         }
     }
 
-    boolean tileIsVisible(int i, int j) {
-        return grid[i][j].isVisible;
+    @Override
+    public Cell getCell(int i, int j) {
+        return grid[i][j];
     }
-
-    int nTilesToUncover() {
+    @Override
+    public int nTilesToUncover() {
         return nTilesToUncover;
     }
-
-    void setSizeX(int size) {
-        this.sizeX = size;
-    }
-
-    int getSizeX() {
+    @Override
+    public int getSizeX() {
         return sizeX;
     }
-
-    void setSizeY(int size) {
-        this.sizeY = size;
-    }
-
-    int getSizeY() {
+    @Override
+    public int getSizeY() {
         return sizeY;
     }
-
-    Cell[][] getGrid() {
-        return grid;
-    }
-
-
-    void setGrid() {
+    @Override
+    public void setGrid(int sizeX, int sizeY) {
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
         grid = new Cell[sizeY][sizeX];
     }
 }
