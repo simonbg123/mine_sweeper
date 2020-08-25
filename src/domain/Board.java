@@ -1,3 +1,5 @@
+package domain;
+
 import interfaces.IBoard;
 import interfaces.ICell;
 
@@ -7,7 +9,7 @@ import java.util.Random;
 /**
  * Represents the game board logical structure. It modifies the board state.
  */
-class Board implements IBoard {
+public class Board implements IBoard {
 
     /**
      * n rows, n columns
@@ -66,7 +68,7 @@ class Board implements IBoard {
         setGrid(m, n);
     }
 
-    static Board getInstance() {
+    public static Board getInstance() {
         return instance;
     }
 

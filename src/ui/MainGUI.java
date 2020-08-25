@@ -1,28 +1,22 @@
+package ui;
+
+import domain.Board;
+import domain.Game;
+import domain.Manager;
+
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 /**
  * Displays the board, controls, menu and announcements.
  */
-class MainGUI extends JFrame implements ActionListener {
+public class MainGUI extends JFrame implements ActionListener {
 
     private static final int WINDOW_WIDTH = 1186;
     private static final int WINDOW_HEIGHT = 829;
     static final int PANEL_WIDTH = 1180;
     static final int PANEL_HEIGHT = 800;
-
-    private static final int OPTIONS_PANEL_WIDTH = 144;
-    private static final int OPTIONS_PANEL_HEIGHT = 128;
-    private static final int ANNOUNCEMENT_PANEL_WIDTH = PANEL_WIDTH - OPTIONS_PANEL_WIDTH - 25;
-    private static final int ANNOUNCEMENT_PANEL_HEIGHT = 128;
-
-    private static final String CONTINUE_BUTTON_STRING = "Continue";
-    private static final String NEWGAME_BUTTON_STRING = "New Game";
 
     private static final String MODE_MENU_STRING = "Mode";
     private static final String DIFFICULTY_MENU_STRING = "Difficulty";
@@ -36,13 +30,6 @@ class MainGUI extends JFrame implements ActionListener {
     private static final String MEDIUM_BOARD_OPTION_STRING = "Medium Board";
     private static final String LARGE_BOARD_OPTION_STRING = "Large Board";
 
-    private static final String FLAG_BUTTON_ACTION = "Flag Button";
-
-    private static final String LEVEL_COMPLETED_STRING = "LEVEL COMPLETED!";
-    private static final String LEVELS_FINISHED_STRING = "CONGRATULATIONS, YOU WIN!!!";
-    private static final String GAME_LOST_STRING = "BOOM! GAME OVER. TRY AGAIN!";
-    private static final String NO_RESULT = "";
-
     private static final String BOARD_SIZE_CHANGE_WARNING = "This change will cause a new game to be started. Would you like to proceed?";
     private static final String BOARD_SIZE_CHANGE_WARNING_TITLE = "Board Size Change";
 
@@ -51,12 +38,9 @@ class MainGUI extends JFrame implements ActionListener {
     private Game game;
     private Manager manager;
 
-    private String gameStateString;
-    private String gameResultString;
-    private boolean continueIsVisible = false;
-
     private BoardGUI boardGUI;
-
+    private TopLeftPanel topLeftPanel;
+    private AnnouncementPanel announcementPanel;
 
     public MainGUI() {
 
@@ -66,11 +50,6 @@ class MainGUI extends JFrame implements ActionListener {
 
         setLayout(null);
 
-
-        setGameStateString();
-        setGameResultString(NO_RESULT);
-
-
         setTitle("Mine Sweeper");
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,12 +58,11 @@ class MainGUI extends JFrame implements ActionListener {
         boardGUI = new BoardGUI(this, board, game);
         add(boardGUI);
 
-        TopLeftPanel optionsPanel = new TopLeftPanel();
-        add(optionsPanel);
-
-        AnnouncementPanel announcementPanel = new AnnouncementPanel();
+        announcementPanel = new AnnouncementPanel(this, manager);
         add(announcementPanel);
 
+        topLeftPanel = new TopLeftPanel(this);
+        add(topLeftPanel);
 
         JMenu modeMenu = new JMenu(MODE_MENU_STRING);
         ButtonGroup modeButtonGroup = new ButtonGroup();
@@ -173,20 +151,20 @@ class MainGUI extends JFrame implements ActionListener {
     void refresh() {
 
         Game.State gameState = game.getState();
-        setGameStateString();
+        announcementPanel.setGameStateString();
 
         if (gameState == Game.State.WON) {
             if (manager.getCurrentLevel() == manager.getWinLevel()) {
-                gameResultString = LEVELS_FINISHED_STRING;
+                announcementPanel.setGameResultString(AnnouncementPanel.LEVELS_FINISHED_STRING);
 
             }
             else {
-                gameResultString = LEVEL_COMPLETED_STRING;
-                setContinueIsVisible(true);
+                announcementPanel.setGameResultString(AnnouncementPanel.LEVEL_COMPLETED_STRING);
+                topLeftPanel.setContinueIsVisible(true);
             }
         }
         else if (gameState == Game.State.LOST) {
-            gameResultString = GAME_LOST_STRING;
+            announcementPanel.setGameResultString(AnnouncementPanel.GAME_LOST_STRING);
         }
 
         repaint(0);
@@ -198,6 +176,36 @@ class MainGUI extends JFrame implements ActionListener {
 
         String actionCommand = e.getActionCommand();
         switch (actionCommand) {
+            case TopLeftPanel.CONTINUE_BUTTON_STRING:
+
+                manager.setNextLevel();
+
+                topLeftPanel.setContinueIsVisible(false);
+                announcementPanel.setGameStateString();
+                announcementPanel.setGameResultString(AnnouncementPanel.NO_RESULT);
+                refresh();
+                break;
+
+            case TopLeftPanel.NEWGAME_BUTTON_STRING:
+
+                manager.setNewGame();
+
+                topLeftPanel.setContinueIsVisible(false);
+                announcementPanel.setGameStateString();
+                announcementPanel.setGameResultString(AnnouncementPanel.NO_RESULT);
+                refresh();
+                break;
+
+            case AnnouncementPanel.FLAG_BUTTON_ACTION:
+
+                Game.State gameState = game.getState();
+                if (gameState == Game.State.WON || gameState == Game.State.LOST) {
+                    return;
+                }
+                // toggle Flag Buton
+                manager.toggleFlagMode();
+                refresh();
+
             case SINGLE_GAME_OPTION_STRING:
                 manager.setMode(Manager.Mode.SINGLE_GAME);
                 break;
@@ -266,190 +274,5 @@ class MainGUI extends JFrame implements ActionListener {
         boardGUI.setDimensions();
         refresh();
     }
-
-
-    class TopLeftPanel extends JPanel implements ActionListener{
-
-        private JButton continueButton;
-        private JButton newGameButton;
-
-        TopLeftPanel() {
-            setLayout(null);
-            setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-            setBounds(5, 5, OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT);
-
-
-            newGameButton = new JButton(NEWGAME_BUTTON_STRING);
-            newGameButton.setBounds(2, 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3 );
-            newGameButton.addActionListener(this);
-            //newGameButton.setDisabledSelectedIcon(newGameButton.getDisabledSelectedIcon());
-
-            // the listener for this button is given in Manager in the resetBoard() method since
-            // this class is constructed inside Manager's constructor
-            continueButton = new JButton(CONTINUE_BUTTON_STRING);
-            continueButton.setBounds(2, OPTIONS_PANEL_HEIGHT / 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3);
-            continueButton.addActionListener(this);
-
-            add(newGameButton);
-            add(continueButton);
-
-        }
-
-        public void paintComponent(Graphics g) {
-            continueButton.setEnabled(continueIsVisible);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String actionCommand = e.getActionCommand();
-
-            switch (actionCommand) {
-                case FLAG_BUTTON_ACTION:
-
-                    Game.State gameState = game.getState();
-                    if (gameState == Game.State.WON || gameState == Game.State.LOST) {
-                        return;
-                    }
-
-                    // toggle Flag Buton
-                    manager.toggleFlagMode();
-
-                    refresh();
-                    break;
-
-                case CONTINUE_BUTTON_STRING:
-
-                    manager.setNextLevel();
-
-                    setContinueIsVisible(false);
-                    setGameStateString();
-                    setGameResultString(NO_RESULT);
-                    refresh();
-                    break;
-
-                case NEWGAME_BUTTON_STRING:
-
-                    manager.setNewGame();
-
-                    setContinueIsVisible(false);
-                    setGameStateString();
-                    setGameResultString(NO_RESULT);
-                    refresh();
-                    break;
-            }
-        }
-    }
-
-    class AnnouncementPanel extends JPanel implements MouseListener, ActionListener {
-
-        private JButton flagButton;
-
-        JLabel gameStateLabel;
-        JLabel gameResultLabel;
-
-        AnnouncementPanel() {
-            setLayout(null);
-            setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-            setBounds(5 + OPTIONS_PANEL_WIDTH + 5, 5, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT );
-
-            gameStateLabel = new JLabel();
-            gameStateLabel.setFont(new Font("Monospaced", Font.BOLD, 23));
-            gameStateLabel.setForeground(Color.BLACK);
-            gameStateLabel.setVerticalAlignment(SwingConstants.CENTER);
-            gameStateLabel.setBounds(35, 0, 250, ANNOUNCEMENT_PANEL_HEIGHT);
-            add(gameStateLabel);
-
-            gameResultLabel = new JLabel();
-            gameResultLabel.setFont(new Font("Monospaced", Font.BOLD, 30));
-            gameResultLabel.setForeground(Color.BLACK);
-            gameResultLabel.setVerticalAlignment(SwingConstants.CENTER);
-            gameResultLabel.setBounds(295, 0, ANNOUNCEMENT_PANEL_WIDTH - 330, ANNOUNCEMENT_PANEL_HEIGHT);
-            add(gameResultLabel);
-
-            flagButton = new JButton(new ImageIcon(getClass().getResource("/res/gray_flag.png")));
-            // below works too
-            // flagButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("res/gray_flag.png")));
-            flagButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-            flagButton.setBounds(PANEL_WIDTH - OPTIONS_PANEL_WIDTH - 125, 30, 64, 64);
-            flagButton.setBackground(Color.lightGray);
-            flagButton.setActionCommand(FLAG_BUTTON_ACTION);
-            flagButton.addMouseListener(this);
-            flagButton.addActionListener(this);
-            add(flagButton);
-
-        }
-
-        public void paintComponent(Graphics g) {
-
-            gameStateLabel.setText(gameStateString);
-            gameResultLabel.setText(gameResultString);
-
-            g.setColor(new JButton().getBackground());
-            g.fillRect(0, 0, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT);
-            g.setColor(Color.BLUE);
-            g.fillRect(6, 6, ANNOUNCEMENT_PANEL_WIDTH - 12, ANNOUNCEMENT_PANEL_HEIGHT - 12);
-            g.setColor(new JButton().getBackground());
-            g.fillRect(9, 9, ANNOUNCEMENT_PANEL_WIDTH - 18, ANNOUNCEMENT_PANEL_HEIGHT - 18);
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            flagButton.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createBevelBorder(BevelBorder.LOWERED), BorderFactory.createLineBorder(Color.DARK_GRAY, 1)));
-            this.repaint();
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            flagButton.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createBevelBorder(BevelBorder.RAISED), BorderFactory.createLineBorder(Color.DARK_GRAY, 1)));
-            this.repaint();
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            flagButton.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createBevelBorder(BevelBorder.RAISED), BorderFactory.createLineBorder(Color.DARK_GRAY, 1)));
-            this.repaint();
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            flagButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-            this.repaint();
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand().equals(FLAG_BUTTON_ACTION)) {
-                manager.toggleFlagMode();
-                refresh();
-            }
-        }
-    }
-
-
-
-
-
-    void setGameStateString() {
-        gameStateString = "<html>LEVEL &nbsp;&nbsp&nbsp;&nbsp&nbsp;: " + manager.getCurrentLevel() + "/" + manager.getWinLevel() + "<br>" +
-                "BOMBS &nbsp;&nbsp&nbsp;&nbsp&nbsp;: " + manager.getnBombs() + "<br>" +
-                "TILES LEFT : " + board.nTilesToUncover() + "</html>";
-    }
-
-    void setGameResultString(String gameResultString) {
-        this.gameResultString = gameResultString;
-    }
-
-    void setContinueIsVisible(boolean continueIsVisible) {
-        this.continueIsVisible = continueIsVisible;
-    }
-
 }
 

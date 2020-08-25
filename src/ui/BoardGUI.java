@@ -1,3 +1,7 @@
+package ui;
+
+import domain.Game;
+import domain.Manager;
 import interfaces.IBoard;
 import interfaces.ICell;
 import interfaces.IGame;

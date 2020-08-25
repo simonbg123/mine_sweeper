@@ -1,1 +1,1 @@
-The Manager class listens to the MainGUI buttons, and interacts with the MainGUI. Would be hard to re-use the same business with a different MainGUI, perhaps a MainGUI, particularly one that uses a different technology.
+The domain.Manager class listens to the ui.MainGUI buttons, and interacts with the ui.MainGUI. Would be hard to re-use the same business with a different ui.MainGUI, perhaps a ui.MainGUI, particularly one that uses a different technology.
