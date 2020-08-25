@@ -1,6 +1,3 @@
-import interfaces.ICell;
-import interfaces.IManager;
-
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
@@ -58,15 +55,6 @@ class MainGUI extends JFrame implements ActionListener {
     private String gameResultString;
     private boolean continueIsVisible = false;
 
-    private JRadioButtonMenuItem singleGameModeOption;
-    private JRadioButtonMenuItem multilevelModeOption;
-    private JRadioButtonMenuItem difficultyEasyOption;
-    private JRadioButtonMenuItem difficultyMediumOption;
-    private JRadioButtonMenuItem difficultyHardOption;
-    private JRadioButtonMenuItem smallGridOption;
-    private JRadioButtonMenuItem mediumGridOption;
-    private JRadioButtonMenuItem largeGridOption;
-
     private BoardGUI boardGUI;
 
 
@@ -88,21 +76,20 @@ class MainGUI extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
-        initBoard();
+        boardGUI = new BoardGUI(this, board, game);
+        add(boardGUI);
 
         TopLeftPanel optionsPanel = new TopLeftPanel();
-        optionsPanel.setBounds(5, 5, OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT);
         add(optionsPanel);
 
         AnnouncementPanel announcementPanel = new AnnouncementPanel();
-        announcementPanel.setBounds(5 + OPTIONS_PANEL_WIDTH + 5, 5, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT );
         add(announcementPanel);
 
 
         JMenu modeMenu = new JMenu(MODE_MENU_STRING);
         ButtonGroup modeButtonGroup = new ButtonGroup();
-        singleGameModeOption = new JRadioButtonMenuItem(SINGLE_GAME_OPTION_STRING);
-        multilevelModeOption = new JRadioButtonMenuItem(MULTILEVEL_OPTION_STRING);
+        var singleGameModeOption = new JRadioButtonMenuItem(SINGLE_GAME_OPTION_STRING);
+        var multilevelModeOption = new JRadioButtonMenuItem(MULTILEVEL_OPTION_STRING);
         if (Manager.DEFAULT_MODE == Manager.Mode.MULTILEVEL) {
             multilevelModeOption.setSelected(true);
         }
@@ -119,9 +106,9 @@ class MainGUI extends JFrame implements ActionListener {
 
         JMenu difficultyMenu = new JMenu(DIFFICULTY_MENU_STRING);
         ButtonGroup difficultyButtonGroup = new ButtonGroup();
-        difficultyEasyOption = new JRadioButtonMenuItem(EASY_OPTION_STRING);
-        difficultyMediumOption = new JRadioButtonMenuItem(MEDIUM_OPTION_STRING);
-        difficultyHardOption = new JRadioButtonMenuItem(HARD_OPTION_STRING);
+        var difficultyEasyOption = new JRadioButtonMenuItem(EASY_OPTION_STRING);
+        var difficultyMediumOption = new JRadioButtonMenuItem(MEDIUM_OPTION_STRING);
+        var difficultyHardOption = new JRadioButtonMenuItem(HARD_OPTION_STRING);
 
         if (Manager.DEFAULT_DIFFICULTY == Manager.Difficulty.EASY) {
             difficultyEasyOption.setSelected(true);
@@ -145,9 +132,9 @@ class MainGUI extends JFrame implements ActionListener {
 
         JMenu boardSizeMenu = new JMenu(BOARD_SIZE_MENU_STRING);
         ButtonGroup boardSizeButtonGroup = new ButtonGroup();
-        smallGridOption = new JRadioButtonMenuItem(SMALL_BOARD_OPTION_STRING);
-        mediumGridOption = new JRadioButtonMenuItem(MEDIUM_BOARD_OPTION_STRING);
-        largeGridOption = new JRadioButtonMenuItem(LARGE_BOARD_OPTION_STRING);
+        var smallGridOption = new JRadioButtonMenuItem(SMALL_BOARD_OPTION_STRING);
+        var mediumGridOption = new JRadioButtonMenuItem(MEDIUM_BOARD_OPTION_STRING);
+        var largeGridOption = new JRadioButtonMenuItem(LARGE_BOARD_OPTION_STRING);
 
         if (board.getSizeY() == Manager.SMALL_GRID_SIZE_Y) {
             smallGridOption.setSelected(true);
@@ -181,19 +168,6 @@ class MainGUI extends JFrame implements ActionListener {
 
         repaint();
 
-    }
-
-    void initBoard() {
-
-        //if (boardGUI != null) remove(boardGUI);
-        if (boardGUI != null) {
-            remove(boardGUI);
-        }
-        boardGUI = new BoardGUI(this, board, game);
-        int gridWidth = boardGUI.getGridWidth();
-        int gridHeight = boardGUI.getGridHeight();
-        boardGUI.setBounds((MainGUI.PANEL_WIDTH - gridWidth) / 2, (MainGUI.PANEL_HEIGHT - gridHeight) * 6 / 9, gridWidth, gridHeight);
-        add(boardGUI);
     }
 
     void refresh() {
@@ -288,8 +262,8 @@ class MainGUI extends JFrame implements ActionListener {
                 sizeY = Manager.LARGE_GRID_SIZE_Y;
         }
 
-        manager.setBoardSizeAndRestart(sizeX, sizeY);
-        initBoard();
+        manager.setBoardSizeAndRestart(sizeY, sizeX);
+        boardGUI.setDimensions();
         refresh();
     }
 
@@ -302,13 +276,15 @@ class MainGUI extends JFrame implements ActionListener {
         TopLeftPanel() {
             setLayout(null);
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+            setBounds(5, 5, OPTIONS_PANEL_WIDTH, OPTIONS_PANEL_HEIGHT);
+
 
             newGameButton = new JButton(NEWGAME_BUTTON_STRING);
             newGameButton.setBounds(2, 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3 );
             newGameButton.addActionListener(this);
             //newGameButton.setDisabledSelectedIcon(newGameButton.getDisabledSelectedIcon());
 
-            // the listener for this button is given in Manager in the initBoard() method since
+            // the listener for this button is given in Manager in the resetBoard() method since
             // this class is constructed inside Manager's constructor
             continueButton = new JButton(CONTINUE_BUTTON_STRING);
             continueButton.setBounds(2, OPTIONS_PANEL_HEIGHT / 2, OPTIONS_PANEL_WIDTH - 4, OPTIONS_PANEL_HEIGHT / 2 - 3);
@@ -374,23 +350,28 @@ class MainGUI extends JFrame implements ActionListener {
         AnnouncementPanel() {
             setLayout(null);
             setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+            setBounds(5 + OPTIONS_PANEL_WIDTH + 5, 5, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT );
 
             gameStateLabel = new JLabel();
             gameStateLabel.setFont(new Font("Monospaced", Font.BOLD, 23));
             gameStateLabel.setForeground(Color.BLACK);
             gameStateLabel.setVerticalAlignment(SwingConstants.CENTER);
+            gameStateLabel.setBounds(35, 0, 250, ANNOUNCEMENT_PANEL_HEIGHT);
             add(gameStateLabel);
 
             gameResultLabel = new JLabel();
             gameResultLabel.setFont(new Font("Monospaced", Font.BOLD, 30));
             gameResultLabel.setForeground(Color.BLACK);
             gameResultLabel.setVerticalAlignment(SwingConstants.CENTER);
+            gameResultLabel.setBounds(295, 0, ANNOUNCEMENT_PANEL_WIDTH - 330, ANNOUNCEMENT_PANEL_HEIGHT);
             add(gameResultLabel);
 
             flagButton = new JButton(new ImageIcon(getClass().getResource("/res/gray_flag.png")));
             // below works too
             // flagButton = new JButton(new ImageIcon(ClassLoader.getSystemResource("res/gray_flag.png")));
             flagButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+            flagButton.setBounds(PANEL_WIDTH - OPTIONS_PANEL_WIDTH - 125, 30, 64, 64);
+            flagButton.setBackground(Color.lightGray);
             flagButton.setActionCommand(FLAG_BUTTON_ACTION);
             flagButton.addMouseListener(this);
             flagButton.addActionListener(this);
@@ -401,10 +382,7 @@ class MainGUI extends JFrame implements ActionListener {
         public void paintComponent(Graphics g) {
 
             gameStateLabel.setText(gameStateString);
-            gameStateLabel.setBounds(35, 0, 250, ANNOUNCEMENT_PANEL_HEIGHT);
-
             gameResultLabel.setText(gameResultString);
-            gameResultLabel.setBounds(295, 0, ANNOUNCEMENT_PANEL_WIDTH - 330, ANNOUNCEMENT_PANEL_HEIGHT);
 
             g.setColor(new JButton().getBackground());
             g.fillRect(0, 0, ANNOUNCEMENT_PANEL_WIDTH, ANNOUNCEMENT_PANEL_HEIGHT);
@@ -412,10 +390,6 @@ class MainGUI extends JFrame implements ActionListener {
             g.fillRect(6, 6, ANNOUNCEMENT_PANEL_WIDTH - 12, ANNOUNCEMENT_PANEL_HEIGHT - 12);
             g.setColor(new JButton().getBackground());
             g.fillRect(9, 9, ANNOUNCEMENT_PANEL_WIDTH - 18, ANNOUNCEMENT_PANEL_HEIGHT - 18);
-
-            flagButton.setBounds(PANEL_WIDTH - OPTIONS_PANEL_WIDTH - 125, 30, 64, 64);
-            flagButton.setBackground(Color.lightGray);
-
         }
 
         @Override

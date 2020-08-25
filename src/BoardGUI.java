@@ -39,20 +39,20 @@ class BoardGUI extends JPanel implements MouseListener {
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         addMouseListener(this);
 
-        initBoard();
+        setDimensions();
 
 
     }
 
-    public int getGridHeight() {
+    int getGridHeight() {
         return gridHeight;
     }
 
-    public int getGridWidth() {
+    int getGridWidth() {
         return gridWidth;
     }
 
-    void initBoard() {
+    void setDimensions() {
         boardSizeX = board.getSizeX();
         boardSizeY = board.getSizeY();
 
@@ -77,7 +77,7 @@ class BoardGUI extends JPanel implements MouseListener {
         gridHeight = boardSizeY * cellSize + 6 * spacing;
         gridWidth = boardSizeX * cellSize + 6 * spacing;
 
-
+        setBounds((MainGUI.PANEL_WIDTH - gridWidth) / 2, (MainGUI.PANEL_HEIGHT - gridHeight) * 6 / 9, gridWidth, gridHeight);
     }
 
     public void paintComponent(Graphics g) {
