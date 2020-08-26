@@ -189,32 +189,61 @@ class BoardGUI extends JPanel implements MouseListener {
 
     private void paintBomb(Graphics g, int x, int y) {
 
-        int bombsize = (cellSize == LARGE_GRID_CELL_SIZE ? 13 : 26 );
-        int sizeFactor = (cellSize == LARGE_GRID_CELL_SIZE ? 1 : 2 );
+        if (cellSize == MEDIUM_GRID_CELL_SIZE) {
 
-        int start = (cellSize - 2 * spacing - bombsize) / 2;
-        g.setColor(Color.black);
+            g.setColor(Color.black);
 
-        // paint the first two narrow rectangles
-        g.fillRect(x + start, y + start + 6 * sizeFactor, bombsize, 1 * sizeFactor);
-        g.fillRect(x + start + 6 * sizeFactor, y + start, 1 * sizeFactor, bombsize);
+            // paint the first two narrow rectangles
+            g.fillRect(x + 5, y + 16, 24, 2);
+            g.fillRect(x + 16, y + 5, 2, 24);
 
-        // paint the two medium rectangles
-        g.fillRect(x + start + 2 * sizeFactor, y + start + 4 * sizeFactor, 9 * sizeFactor, 5 * sizeFactor);
-        g.fillRect(x + start + 4 * sizeFactor, y + start + 2 * sizeFactor, 5 * sizeFactor, 9 * sizeFactor);
+            // paint the two medium rectangles
+            g.fillRect(x + 8, y + 12, 18, 10);
+            g.fillRect(x + 12, y + 8, 10, 18);
 
-        // paint the middle square
-        g.fillRect(x + start + 3 * sizeFactor, y + start + 3 * sizeFactor, 7 * sizeFactor, 7 * sizeFactor);
+            // paint the middle square
+            g.fillRect(x + 10, y + 10, 14, 14);
 
-        //four little squares
-        g.fillRect(x + start + 2 * sizeFactor, y + start + 2 * sizeFactor, 1 * sizeFactor, 1 * sizeFactor);
-        g.fillRect(x + start + 2 * sizeFactor, y + start + 10 * sizeFactor, 1 * sizeFactor, 1 * sizeFactor);
-        g.fillRect(x + start + 10 * sizeFactor, y + start + 2 * sizeFactor, 1 * sizeFactor, 1 * sizeFactor);
-        g.fillRect(x + start + 10 * sizeFactor, y + start + 10 * sizeFactor, 1 * sizeFactor, 1 * sizeFactor);
+            //four little squares
+            g.fillRect(x + 8, y + 8, 2, 2);
+            g.fillRect(x + 24, y + 8, 2, 2);
+            g.fillRect(x + 8, y + 24, 2, 2);
+            g.fillRect(x + 24, y + 24, 2, 2);
 
-        //white reflexion
-        g.setColor(Color.WHITE);
-        g.fillRect(x + start + 4 * sizeFactor, y + start + 4 * sizeFactor, 2 * sizeFactor, 2 * sizeFactor);
+            //white reflexion
+            g.setColor(Color.WHITE);
+            g.fillRect(x + 12, y + 12, 4, 4);
+
+        }
+        else {
+            int bombsize = (cellSize == LARGE_GRID_CELL_SIZE ? 13 : 26 );
+            int sizeFactor = (cellSize == LARGE_GRID_CELL_SIZE ? 1 : 2 );
+
+            int start = (cellSize - 2 * spacing - bombsize) / 2;
+            g.setColor(Color.black);
+
+            // paint the first two narrow rectangles
+            g.fillRect(x + start, y + start + 6 * sizeFactor, bombsize, 1 * sizeFactor);
+            g.fillRect(x + start + 6 * sizeFactor, y + start, 1 * sizeFactor, bombsize);
+
+            // paint the two medium rectangles
+            g.fillRect(x + start + 2 * sizeFactor, y + start + 4 * sizeFactor, 9 * sizeFactor, 5 * sizeFactor);
+            g.fillRect(x + start + 4 * sizeFactor, y + start + 2 * sizeFactor, 5 * sizeFactor, 9 * sizeFactor);
+
+            // paint the middle square
+            g.fillRect(x + start + 3 * sizeFactor, y + start + 3 * sizeFactor, 7 * sizeFactor, 7 * sizeFactor);
+
+            //four little squares
+            g.fillRect(x + start + 2 * sizeFactor, y + start + 2 * sizeFactor, 1 * sizeFactor, 1 * sizeFactor);
+            g.fillRect(x + start + 2 * sizeFactor, y + start + 10 * sizeFactor, 1 * sizeFactor, 1 * sizeFactor);
+            g.fillRect(x + start + 10 * sizeFactor, y + start + 2 * sizeFactor, 1 * sizeFactor, 1 * sizeFactor);
+            g.fillRect(x + start + 10 * sizeFactor, y + start + 10 * sizeFactor, 1 * sizeFactor, 1 * sizeFactor);
+
+            //white reflexion
+            g.setColor(Color.WHITE);
+            g.fillRect(x + start + 4 * sizeFactor, y + start + 4 * sizeFactor, 2 * sizeFactor, 2 * sizeFactor);
+        }
+
 
     }
 
